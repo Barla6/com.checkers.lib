@@ -1,16 +1,5 @@
 package com.checkers
 
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import com.checkers.plugins.*
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.plugins.cors.*
-import com.google.gson.Gson
-import io.ktor.server.request.*
-
 fun main() {
 
     val game = Game()
@@ -75,47 +64,4 @@ fun main() {
 //    println("---- AFTER BEST MOVE ----")
 //    boardAfterBestMove.second.printBoard()
 
-    embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
-
-        // configurations and installations
-        configureRouting()
-        install(CORS) {
-            anyHost()
-            allowHeader(HttpHeaders.ContentType)
-            allowHeader(HttpHeaders.Authorization)
-        }
-
-        val gson = Gson()
-
-        routing {
-
-            // get request that return the initial board of the game
-            get("/board") {
-                System.out.println("/board")
-                val jsonBoard = gson.toJson(game.board)
-                call.respond(jsonBoard)
-            }
-
-            post("/possibleMoves") {
-                val textBody = call.receiveText()
-                val coordinates = gson.fromJson(textBody, Coordinates::class.java)
-
-                call.respond("row: ${coordinates.row} col: ${coordinates.col}")
-            }
-
-            post("/play") {
-                val textBody = call.receiveText()
-                val board = gson.fromJson(textBody, Board::class.java)
-
-                game.board = board
-                val start = System.currentTimeMillis()
-                game.makeTurn()
-                val end = System.currentTimeMillis()
-                System.out.println("interval:" + (end-start))
-                val resultBoard = gson.toJson(game.board)
-                game.board.printBoard()
-                call.respond(resultBoard)
-            }
-        }
-    }.start(true)
 }
