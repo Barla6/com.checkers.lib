@@ -1,6 +1,4 @@
-package com.checkers
-
-import kotlin.math.abs
+package com.checkers.models
 
 // TODO: maybe make class Move to typealias
 // Move represents a concatenation of a single piece moves

@@ -1,5 +1,6 @@
-package com.checkers
+package com.checkers.models
 
+import com.checkers.Constants
 import kotlin.random.Random
 
 class Board(

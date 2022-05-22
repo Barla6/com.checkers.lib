@@ -1,5 +1,6 @@
-package com.checkers
+package com.checkers.models
 
+import com.checkers.Constants
 import kotlin.math.abs
 
 data class Coordinates(val row: Int, val col: Int) {
@@ -17,7 +18,7 @@ data class Coordinates(val row: Int, val col: Int) {
 
     fun cloneCoordinate(): Coordinates = Coordinates(row, col)
 
-    fun nextTo(other:Coordinates):Boolean =
+    fun nextTo(other: Coordinates):Boolean =
         abs(row - other.row) == 1 && abs(col - other.col) == 1
 
     override fun equals(other: Any?): Boolean {

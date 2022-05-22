@@ -1,4 +1,4 @@
-package com.checkers
+package com.checkers.models
 
 class Piece(
     val player: Player,

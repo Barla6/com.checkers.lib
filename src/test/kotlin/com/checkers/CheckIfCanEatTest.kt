@@ -1,5 +1,8 @@
 package com.checkers
 
+import com.checkers.models.Board
+import com.checkers.models.Coordinates
+import com.checkers.models.PieceType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -13,7 +16,8 @@ internal class CheckIfCanEatTest {
 
         val result = board.checkIfCanEat(
             eaterCoordinates = Coordinates(2, 1),
-            eatenCoordinates = Coordinates(4, 3))
+            eatenCoordinates = Coordinates(4, 3)
+        )
 
         val expected = true
 
@@ -28,7 +32,8 @@ internal class CheckIfCanEatTest {
 
         val result = board.checkIfCanEat(
             eaterCoordinates = Coordinates(2, 1),
-            eatenCoordinates = Coordinates(4, 3))
+            eatenCoordinates = Coordinates(4, 3)
+        )
 
         val expected = true
 
@@ -42,7 +47,8 @@ internal class CheckIfCanEatTest {
 
         val result = board.checkIfCanEat(
             eaterCoordinates = Coordinates(2, 1),
-            eatenCoordinates = Coordinates(3, 2))
+            eatenCoordinates = Coordinates(3, 2)
+        )
 
         val expected = true
 
@@ -56,7 +62,8 @@ internal class CheckIfCanEatTest {
 
         val result = board.checkIfCanEat(
             eaterCoordinates = Coordinates(2, 1),
-            eatenCoordinates = Coordinates(5, 4))
+            eatenCoordinates = Coordinates(5, 4)
+        )
 
         val expected = false
 
@@ -69,7 +76,8 @@ internal class CheckIfCanEatTest {
 
         val result = board.checkIfCanEat(
             eaterCoordinates = Coordinates(2, 1),
-            eatenCoordinates = Coordinates(5, 6))
+            eatenCoordinates = Coordinates(5, 6)
+        )
 
         val expected = false
 
@@ -83,7 +91,8 @@ internal class CheckIfCanEatTest {
         board.getPieceByCoordinates(Coordinates(2, 1))!!.type = PieceType.KING
         val result = board.checkIfCanEat(
             eaterCoordinates = Coordinates(2, 1),
-            eatenCoordinates = Coordinates(5, 4))
+            eatenCoordinates = Coordinates(5, 4)
+        )
 
         val expected = false
 
@@ -98,7 +107,8 @@ internal class CheckIfCanEatTest {
 
         val result = board.checkIfCanEat(
             eaterCoordinates = Coordinates(2, 1),
-            eatenCoordinates = Coordinates(3, 2))
+            eatenCoordinates = Coordinates(3, 2)
+        )
 
         val expected = false
 

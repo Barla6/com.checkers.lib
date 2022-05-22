@@ -1,5 +1,8 @@
 package com.checkers
 
+import com.checkers.models.Board
+import com.checkers.models.Coordinates
+import com.checkers.models.Player
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
