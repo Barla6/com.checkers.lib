@@ -3,7 +3,7 @@ package com.checkers
 import com.checkers.models.Board
 import com.checkers.models.Coordinates
 import com.checkers.models.Move
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 internal class GetPossibleMovesForPieceTest {
@@ -17,7 +17,7 @@ internal class GetPossibleMovesForPieceTest {
         board.removePiece(Coordinates(7, 2))
         board.movePiece(Coordinates(2, 1), Coordinates(6, 1))
 
-        val result = board.getPossibleMovesForPiece(Coordinates(6, 1))
+        val result = MovesTreeBuilder.getPossibleMovesForPiece(board, Coordinates(6, 1))
 
         val expected = mutableListOf(
             Move(
@@ -28,7 +28,9 @@ internal class GetPossibleMovesForPieceTest {
             )
         )
 
-        assertEquals(expected, result)
+        assertTrue(expected.size == result.size)
+        assertTrue(expected.containsAll(result))
+        assertTrue(result.containsAll(expected))
     }
 
     @Test
@@ -38,7 +40,7 @@ internal class GetPossibleMovesForPieceTest {
         board.removePiece(Coordinates(5, 2))
         board.removePiece(Coordinates(7, 2))
 
-        val result = board.getPossibleMovesForPiece(Coordinates(5, 4))
+        val result = MovesTreeBuilder.getPossibleMovesForPiece(board, Coordinates(5, 4))
 
         val expected = mutableListOf(
             Move(
@@ -49,7 +51,9 @@ internal class GetPossibleMovesForPieceTest {
             )
         )
 
-        assertEquals(expected, result)
+        assertTrue(expected.size == result.size)
+        assertTrue(expected.containsAll(result))
+        assertTrue(result.containsAll(expected))
     }
 
     @Test
@@ -60,7 +64,7 @@ internal class GetPossibleMovesForPieceTest {
         board.removePiece(Coordinates(7, 2))
         board.removePiece(Coordinates(5, 0))
 
-        val result = board.getPossibleMovesForPiece(Coordinates(5, 4))
+        val result = MovesTreeBuilder.getPossibleMovesForPiece(board, Coordinates(5, 4))
 
         val expected = mutableListOf(
             Move(
@@ -71,7 +75,9 @@ internal class GetPossibleMovesForPieceTest {
             )
         )
 
-        assertEquals(expected, result)
+        assertTrue(expected.size == result.size)
+        assertTrue(expected.containsAll(result))
+        assertTrue(result.containsAll(expected))
     }
 
     @Test
@@ -80,7 +86,7 @@ internal class GetPossibleMovesForPieceTest {
         board.movePiece(Coordinates(5, 2), Coordinates(3, 2))
         board.removePiece(Coordinates(6, 5))
 
-        val result = board.getPossibleMovesForPiece(Coordinates(2, 1))
+        val result = MovesTreeBuilder.getPossibleMovesForPiece(board, Coordinates(2, 1))
 
         val expected = mutableListOf(
             Move(
@@ -112,7 +118,9 @@ internal class GetPossibleMovesForPieceTest {
             )
         )
 
-        assertEquals(expected, result)
+        assertTrue(expected.size == result.size)
+        assertTrue(expected.containsAll(result))
+        assertTrue(result.containsAll(expected))
     }
 
     @Test
@@ -121,7 +129,7 @@ internal class GetPossibleMovesForPieceTest {
         board.movePiece(Coordinates(5, 2), Coordinates(3, 2))
         board.removePiece(Coordinates(6, 5))
 
-        val result = board.getPossibleMovesForPiece(Coordinates(2, 3))
+        val result = MovesTreeBuilder.getPossibleMovesForPiece(board, Coordinates(2, 3))
 
         val expected = mutableListOf(
             Move(
@@ -138,14 +146,16 @@ internal class GetPossibleMovesForPieceTest {
             )
         )
 
-        assertEquals(expected, result)
+        assertTrue(expected.size == result.size)
+        assertTrue(expected.containsAll(result))
+        assertTrue(result.containsAll(expected))
     }
 
     @Test
     fun getPossibleMovesForPiece_noSpecialEvents() {
         val board = Board()
 
-        val result = board.getPossibleMovesForPiece(Coordinates(2, 1))
+        val result = MovesTreeBuilder.getPossibleMovesForPiece(board, Coordinates(2, 1))
 
         val expected = mutableListOf(
             Move(
@@ -162,6 +172,8 @@ internal class GetPossibleMovesForPieceTest {
             )
         )
 
-        assertEquals(expected, result)
+        assertTrue(expected.size == result.size)
+        assertTrue(expected.containsAll(result))
+        assertTrue(result.containsAll(expected))
     }
 }

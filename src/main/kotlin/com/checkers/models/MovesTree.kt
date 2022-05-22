@@ -1,8 +1,6 @@
 package com.checkers.models
 
-class MovesTree(
-    val currentMove: MoveWithResultBoard?,
-    val nextPossibleMoves: MutableList<MovesTree> = mutableListOf()
-) {
-
-}
+data class MovesTree(
+    val currentMove: MoveWithResultBoard,
+    var nextPossibleMoves: MutableList<MovesTree> = mutableListOf()
+)
