@@ -5,7 +5,7 @@ import kotlin.math.abs
 
 data class Coordinates(val row: Int, val col: Int) {
 
-    fun isValid(): Boolean {
+    fun insideBoard(): Boolean {
         return this.row in 0 until Constants.ROWS_NUMBER && this.col in 0 until Constants.COLS_NUMBER
     }
 

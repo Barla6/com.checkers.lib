@@ -140,6 +140,10 @@ class Board(
         return coordinates
     }
 
+    fun getPieceByMove(move: Move): Piece {
+        return getPieceByCoordinates(move.getLastPlace())!!
+    }
+
     private fun countPiecesOfPlayer(player: Player): Int =
         countOnBoard { piece -> piece?.player == player }
 
@@ -186,21 +190,21 @@ class Board(
         if (eaterPiece.type == PieceType.REGULAR) {
             eaterDirections.forEach { stepDirection ->
                 val placeToEat = eaterCoordinates.step(stepDirection)
-                if (placeToEat.isValid() && placeToEat == eatenCoordinates) {
+                if (placeToEat.insideBoard() && placeToEat == eatenCoordinates) {
                     val placeAfterEaten = placeToEat.step(stepDirection)
-                    if (placeAfterEaten.isValid() && getPieceByCoordinates(placeAfterEaten) == null)
+                    if (placeAfterEaten.insideBoard() && getPieceByCoordinates(placeAfterEaten) == null)
                         return true
                 }
             }
         } else {
             eaterDirections.forEach { stepDirection ->
                 var nextPlace = eaterCoordinates.step(stepDirection)
-                while (nextPlace.isValid()) {
+                while (nextPlace.insideBoard()) {
                     val pieceInNextPlace = getPieceByCoordinates(nextPlace)
                     if (pieceInNextPlace?.player == eaterPiece.player) break
                     if (pieceInNextPlace?.player == eaterPiece.player.enemy && nextPlace == eatenCoordinates) {
                         val placeAfterEaten = nextPlace.step(stepDirection)
-                        if (placeAfterEaten.isValid() && getPieceByCoordinates(placeAfterEaten) == null)
+                        if (placeAfterEaten.insideBoard() && getPieceByCoordinates(placeAfterEaten) == null)
                             return true
                     }
                     nextPlace = nextPlace.step(stepDirection)
