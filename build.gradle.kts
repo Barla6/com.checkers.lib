@@ -26,6 +26,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$kotlinVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$kotlinVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.21")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 }
 
 tasks.test {

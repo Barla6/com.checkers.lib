@@ -1,14 +1,12 @@
 package com.checkers.models
 
 import com.checkers.Constants
-import kotlin.random.Random
 
 class Board(
     private var board: Array<Array<Piece?>> = Array(Constants.ROWS_NUMBER) { Array(Constants.COLS_NUMBER) { null } }
-) {
+) : Cloneable {
 
-    // initial board for game
-    init {
+    fun initGameBoard() {
         if (board.all { row -> row.all { piece -> piece == null } }) {
             for (row in 0 until Constants.ROWS_NUMBER) {
                 for (col in 0 until Constants.COLS_NUMBER) {
@@ -30,6 +28,11 @@ class Board(
         }
     }
 
+    // initial board for game
+    init {
+        println("luv u!")
+    }
+
     fun printBoard() {
         board.forEach { row ->
             println()
@@ -45,10 +48,10 @@ class Board(
         println()
     }
 
-    fun cloneBoard(): Board {
+    public override fun clone(): Board {
         val bla = Board(board.map { row ->
             row.map { piece ->
-                piece?.clonePiece()
+                piece?.clone()
             }.toTypedArray()
         }.toTypedArray())
         return bla
@@ -66,60 +69,26 @@ class Board(
     private fun isSquareBlack(coordinates: Coordinates) =
         coordinates.col % 2 == (coordinates.row + 1) % 2
 
-    /**
-     * @param - move to make
-     * iterates all the steps of the move and play them including eating pieces
-     * @return - new Board after the move
-     */
-    fun makeMoveInNewBoard(move: Move): Board {
-        var newBoard = cloneBoard()
-        val iterator = move.steps.listIterator()
+    fun executeStep(startCoordinates: Coordinates, endCoordinates: Coordinates): Board {
+        val board = clone()
 
-        for (step in move.steps) {
-            if (iterator.hasNext() && iterator.hasPrevious()) {
-                val startCoordinates = move.steps[iterator.previousIndex()]
-                val endCoordinates = move.steps[iterator.nextIndex()]
-                newBoard = newBoard.makeStepInNewBoard(startCoordinates, endCoordinates)
-            }
-            iterator.next()
-        }
-        return newBoard
-    }
+        board.movePiece(startCoordinates, endCoordinates)
+        Coordinates.range(startCoordinates, endCoordinates)
+            .dropLast(1).forEach { board.removePiece(it) }
 
-    /**
-     * @param - start coordinated and end coordinates
-     * moves the piece in the start coordinates to the end coordinates
-     * and removes piece in between
-     * @return - new Board after the step
-     */
-    fun makeStepInNewBoard(startCoordinates: Coordinates, endCoordinates: Coordinates): Board {
-
-        val newBoard = cloneBoard()
-        newBoard.movePiece(startCoordinates, endCoordinates)
-
-        val stepDirection = StepDirection.getDirection(startCoordinates, endCoordinates)!!
-
-        var currentCoordinate = startCoordinates.step(stepDirection)
-
-        while (currentCoordinate != endCoordinates) {
-            if (newBoard.getPieceByCoordinates(currentCoordinate) != null)
-                newBoard.removePiece(currentCoordinate)
-            currentCoordinate = currentCoordinate.step(stepDirection)
-        }
-
-        return newBoard
+        return board
     }
 
     fun movePiece(startCoordinates: Coordinates, endCoordinates: Coordinates) {
-        val pieceToMove = removePiece(startCoordinates)
+        val pieceToMove = removePiece(startCoordinates)!!
         placePiece(pieceToMove, endCoordinates)
         pieceToMove.makeKingIfNeeded(endCoordinates)
     }
 
-    fun removePiece(coordinates: Coordinates): Piece {
+    fun removePiece(coordinates: Coordinates): Piece? {
         val removedPiece = getPieceByCoordinates(coordinates)
         placePiece(null, coordinates)
-        return removedPiece!!
+        return removedPiece
     }
 
     fun placePiece(piece: Piece?, newCoordinates: Coordinates) {
@@ -129,15 +98,16 @@ class Board(
     fun getPieceByCoordinates(coordinates: Coordinates): Piece? =
         board[coordinates.row][coordinates.col]
 
-    fun getCoordinatesOfPlayer(player: Player): MutableList<Coordinates> {
-        val coordinates = mutableListOf<Coordinates>()
-        board.forEach { row ->
-            row.forEach { piece ->
-                if (piece?.player == player)
-                    coordinates.add(Coordinates(board.indexOf(row), row.indexOf(piece)))
+    fun getCoordinatesOfPlayer(player: Player): List<Coordinates> =
+        board.map { row ->
+            row.mapNotNull { piece ->
+                if (piece?.player == player) Coordinates(board.indexOf(row), row.indexOf(piece)) else null
             }
-        }
-        return coordinates
+        }.flatten()
+
+    fun isRangeEmpty(startCoordinates: Coordinates, endCoordinates: Coordinates): Boolean {
+        val coordinatesRange = Coordinates.range(startCoordinates, endCoordinates)
+        return coordinatesRange.all { this.getPieceByCoordinates(it) == null }
     }
 
     fun getPieceByMove(move: Move): Piece {
@@ -157,97 +127,20 @@ class Board(
      * @param - function that defines the condition of the count
      * @return - the number counted
      */
-    private fun countOnBoard(condition: (piece: Piece?) -> Boolean): Int {
-        var counter = 0
-        board.forEach { row ->
-            row.forEach { piece ->
-                if (condition(piece)) {
-                    counter++
-                }
-            }
+    private fun countOnBoard(condition: (piece: Piece?) -> Boolean): Int =
+        board.sumOf { row ->
+            row.count { piece -> condition(piece) }
         }
-        return counter
-    }
-
-    fun countPiecesInDanger(player: Player): Int {
-        var counter = 0
-
-        val enemyCoordinates = getCoordinatesOfPlayer(player.enemy)
-        val playerCoordinates = getCoordinatesOfPlayer(player)
-
-        playerCoordinates.forEach { playerCoordinate ->
-            enemyCoordinates.forEach { enemyCoordinate ->
-                if (checkIfCanEat(enemyCoordinate, playerCoordinate)) counter++
-            }
-        }
-        return counter
-    }
-
-    fun checkIfCanEat(eaterCoordinates: Coordinates, eatenCoordinates: Coordinates): Boolean {
-        val eaterPiece = getPieceByCoordinates(eaterCoordinates)
-        val eaterDirections = eaterPiece!!.getDirections()
-
-        if (eaterPiece.type == PieceType.REGULAR) {
-            eaterDirections.forEach { stepDirection ->
-                val placeToEat = eaterCoordinates.step(stepDirection)
-                if (placeToEat.insideBoard() && placeToEat == eatenCoordinates) {
-                    val placeAfterEaten = placeToEat.step(stepDirection)
-                    if (placeAfterEaten.insideBoard() && getPieceByCoordinates(placeAfterEaten) == null)
-                        return true
-                }
-            }
-        } else {
-            eaterDirections.forEach { stepDirection ->
-                var nextPlace = eaterCoordinates.step(stepDirection)
-                while (nextPlace.insideBoard()) {
-                    val pieceInNextPlace = getPieceByCoordinates(nextPlace)
-                    if (pieceInNextPlace?.player == eaterPiece.player) break
-                    if (pieceInNextPlace?.player == eaterPiece.player.enemy && nextPlace == eatenCoordinates) {
-                        val placeAfterEaten = nextPlace.step(stepDirection)
-                        if (placeAfterEaten.insideBoard() && getPieceByCoordinates(placeAfterEaten) == null)
-                            return true
-                    }
-                    nextPlace = nextPlace.step(stepDirection)
-                }
-            }
-        }
-        return false
-    }
-
-    // TODO: think of a better way to calculate - only basic calculation for now
-    private fun calculatePointsForBoard(player: Player): Int {
-        val enemy = player.enemy
-
-        return countRegularPiecesOfPlayer(player) +
-                2 * countKingsOfPlayer(player) +
-                countPiecesInDanger(enemy) -
-                countRegularPiecesOfPlayer(enemy) -
-                2 * countKingsOfPlayer(enemy) -
-                countPiecesInDanger(player)
-    }
 
     override fun hashCode(): Int {
         return board.contentDeepHashCode()
     }
 
     companion object {
-
-        fun findTheIndexOfBestBoard(boards: List<Board>, player: Player): Int {
-
-            val indexesOfBestBoards = mutableListOf<Int>()
-            var bestPoints = Int.MIN_VALUE
-
-            boards.forEachIndexed { index, board ->
-                val pointsForNewBoard = board.calculatePointsForBoard(player)
-                if (pointsForNewBoard == bestPoints) {
-                    indexesOfBestBoards.add(index)
-                } else if (pointsForNewBoard > bestPoints) {
-                    indexesOfBestBoards.clear()
-                    indexesOfBestBoards.add(index)
-                    bestPoints = pointsForNewBoard
-                }
-            }
-            return Random.nextInt(indexesOfBestBoards.size)
+        fun emptyBoard(): Board {
+            val emptyBoard = Board()
+            emptyBoard.board = Array(Constants.ROWS_NUMBER) { Array(Constants.COLS_NUMBER) { null } }
+            return emptyBoard
         }
     }
 }
