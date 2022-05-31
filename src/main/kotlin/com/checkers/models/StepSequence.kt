@@ -4,23 +4,23 @@ class StepSequence(
     private val startingBoard: Board,
     private val steps: List<Coordinates>,
     private val eaten: Boolean = false,
-    private val completed: Boolean = false,
+    private val completed: Boolean = false
 ) {
-    private val resultBoard: Board
-        get() = steps.zipWithNext()
-            .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
-                board.executeStep(startCoordinates, endCoordinates)
-            }
+    val resultBoard: Board = steps.zipWithNext()
+        .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
+            board.executeStep(startCoordinates, endCoordinates)
+        }
+    fun resultBoard() = resultBoard
 
-    private val piece: Piece
-        get() = resultBoard.getPieceByCoordinates(currentCoordinates())!!
+    val piece: Piece
+        get() = resultBoard().getPieceByCoordinates(currentCoordinates())!!
 
-    private val lastDirection : StepDirection?
+    private val lastDirection: StepDirection?
         get() =
             if (steps.size == 1) null
             else StepDirection.getDirection(steps[steps.lastIndex - 1], steps[steps.lastIndex])
 
-    private fun currentCoordinates() = steps.last()
+    fun currentCoordinates() = steps.last()
 
     private fun addEatingStep(direction: StepDirection, numberOfSteps: Int = 2): StepSequence {
         val newCoordinates = currentCoordinates().step(direction, numberOfSteps)!!
@@ -33,7 +33,8 @@ class StepSequence(
     }
 
     private fun getNextPossibleSteps(): List<StepSequence> {
-        val directions = ((if (eaten) StepDirection.values() else piece.getDirections()).toList() - lastDirection).map { it!! }
+        val directions =
+            ((if (eaten) StepDirection.values() else piece.getDirections()).toList() - lastDirection).map { it!! }
 
         return when (piece.type) {
             PieceType.REGULAR -> directions.map { direction -> searchNextPossibleStepsForRegularPiece(direction) }
@@ -42,20 +43,20 @@ class StepSequence(
     }
 
     private fun searchNextPossibleStepsForRegularPiece(direction: StepDirection): List<StepSequence> {
-        return when  {
+        return when {
             canEat(direction) -> listOf(addEatingStep(direction))
             canSimpleStep(direction) -> listOf(addSimpleStep(direction))
             else -> listOf()
         }
     }
 
-    private fun canEat(direction: StepDirection, coordinatesToEat: Coordinates? = null): Boolean {
+    fun canEat(direction: StepDirection, coordinatesToEat: Coordinates? = null): Boolean {
         // if param "coordinatesToEat" set to null -> we take the next coordinates in the given direction.
         // if those are out of board -> return false (illegal move).
         val coordinatesToEat = coordinatesToEat ?: currentCoordinates().step(direction) ?: return false
 
         // if there is no piece to eat -> return false.
-        val pieceToEat = resultBoard.getPieceByCoordinates(coordinatesToEat) ?: return false
+        val pieceToEat = resultBoard().getPieceByCoordinates(coordinatesToEat) ?: return false
 
         // if the piece to eat is not the enemy -> return false.
         if (!pieceToEat.enemyOf(piece)) return false
@@ -64,11 +65,11 @@ class StepSequence(
         val nextCoordinates = coordinatesToEat.step(direction) ?: return false
 
         // if the "landing coordinates" are taken -> return false.
-        val pieceInNextPlace = resultBoard.getPieceByCoordinates(nextCoordinates)
+        val pieceInNextPlace = resultBoard().getPieceByCoordinates(nextCoordinates)
         if (pieceInNextPlace != null) return false
 
         // if there is another piece standing in the way of eating -> return false.
-        if (!resultBoard.isRangeEmpty(currentCoordinates(), coordinatesToEat)) return false
+        if (!resultBoard().isRangeEmpty(currentCoordinates(), coordinatesToEat)) return false
 
         return true
     }
@@ -82,11 +83,11 @@ class StepSequence(
         val targetCoordinates = targetCoordinates ?: currentCoordinates().step(direction) ?: return false
 
         // if the "targetCoordinates" are not empty -> return false.
-        val pieceInTargetCoordinates = resultBoard.getPieceByCoordinates(targetCoordinates)
+        val pieceInTargetCoordinates = resultBoard().getPieceByCoordinates(targetCoordinates)
         if (pieceInTargetCoordinates != null) return false
 
         // if there is another piece standing in the way of moving -> return false.
-        if (!resultBoard.isRangeEmpty(currentCoordinates(), targetCoordinates)) return false
+        if (!resultBoard().isRangeEmpty(currentCoordinates(), targetCoordinates)) return false
 
         return true
     }

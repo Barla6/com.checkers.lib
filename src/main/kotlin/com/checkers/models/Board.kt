@@ -28,11 +28,6 @@ class Board(
         }
     }
 
-    // initial board for game
-    init {
-        println("luv u!")
-    }
-
     fun printBoard() {
         board.forEach { row ->
             println()
@@ -107,7 +102,7 @@ class Board(
 
     fun isRangeEmpty(startCoordinates: Coordinates, endCoordinates: Coordinates): Boolean {
         val coordinatesRange = Coordinates.range(startCoordinates, endCoordinates)
-        return coordinatesRange.all { this.getPieceByCoordinates(it) == null }
+        return (coordinatesRange.drop(1).dropLast(1)).all { this.getPieceByCoordinates(it) == null }
     }
 
     fun getPieceByMove(move: Move): Piece {

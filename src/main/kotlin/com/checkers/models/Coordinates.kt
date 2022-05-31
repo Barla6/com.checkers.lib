@@ -15,7 +15,7 @@ data class Coordinates(val row: Int, val col: Int) {
 
     fun step(stepDirection: StepDirection, numberOfSteps: Int = 1): Coordinates? {
 
-        return (1 until numberOfSteps).fold(this) { currentCoordinate, _ ->
+        return (1..numberOfSteps).fold(this) { currentCoordinate, _ ->
             val next = Coordinates(
                 currentCoordinate.row + stepDirection.rowDirection,
                 currentCoordinate.col + stepDirection.colDirection
