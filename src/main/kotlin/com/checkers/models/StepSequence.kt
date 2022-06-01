@@ -6,13 +6,13 @@ class StepSequence(
     private val eaten: Boolean = false,
     private val completed: Boolean = false
 ) {
-    val resultBoard: Board = steps.zipWithNext()
+    private val resultBoard: Board = steps.zipWithNext()
         .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
             board.executeStep(startCoordinates, endCoordinates)
         }
     fun resultBoard() = resultBoard
 
-    val piece: Piece
+    private val piece: Piece
         get() = resultBoard().getPieceByCoordinates(currentCoordinates())!!
 
     private val lastDirection: StepDirection?
@@ -45,7 +45,7 @@ class StepSequence(
     private fun searchNextPossibleStepsForRegularPiece(direction: StepDirection): List<StepSequence> {
         return when {
             canEat(direction) -> listOf(addEatingStep(direction))
-            canSimpleStep(direction) -> listOf(addSimpleStep(direction))
+            canStep(direction) -> listOf(addSimpleStep(direction))
             else -> listOf()
         }
     }
@@ -74,7 +74,7 @@ class StepSequence(
         return true
     }
 
-    private fun canSimpleStep(direction: StepDirection, targetCoordinates: Coordinates? = null): Boolean {
+    fun canStep(direction: StepDirection, targetCoordinates: Coordinates? = null): Boolean {
         // if we've already eaten -> simple step is not allowed
         if (eaten) return false
 
@@ -100,7 +100,7 @@ class StepSequence(
             when {
                 canEat(direction, coordinatesToEat = possibleCoordinate) ->
                     this.addEatingStep(direction, numberOfSteps)
-                canSimpleStep(direction, targetCoordinates = possibleCoordinate) ->
+                canStep(direction, targetCoordinates = possibleCoordinate) ->
                     this.addSimpleStep(direction, numberOfSteps)
                 else -> null
             }
