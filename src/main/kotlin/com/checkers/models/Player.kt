@@ -1,4 +1,4 @@
-package com.checkers
+package com.checkers.models
 
 enum class Player(
     val directions: Array<StepDirection>,

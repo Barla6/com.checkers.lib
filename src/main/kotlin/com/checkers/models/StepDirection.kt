@@ -1,4 +1,4 @@
-package com.checkers
+package com.checkers.models
 
 import kotlin.math.abs
 import kotlin.math.sign

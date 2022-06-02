@@ -1,4 +1,4 @@
-package com.checkers
+package com.checkers.models
 
 enum class PieceType {
     KING,

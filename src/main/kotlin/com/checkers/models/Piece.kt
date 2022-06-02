@@ -1,4 +1,4 @@
-package com.checkers
+package com.checkers.models
 
 class Piece(
     val player: Player,
@@ -16,7 +16,7 @@ class Piece(
         }
     }
 
-    fun clonePiece(): Piece = Piece(player, type)
+    fun clone(): Piece = Piece(player, type)
 
     private fun hasReachedOtherSide(coordinates: Coordinates): Boolean {
         return if (type == PieceType.KING) false
@@ -31,4 +31,6 @@ class Piece(
         result = 31 * result + type.hashCode()
         return result
     }
+
+    fun enemyOf(other: Piece) = this.player == other.player.enemy
 }
