@@ -1,6 +1,7 @@
 package com.checkers.models
 
 import com.checkers.Constants
+import com.checkers.extensions.toward
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sign
@@ -21,7 +22,7 @@ data class Coordinates(val row: Int, val col: Int) {
                 currentCoordinate.col + stepDirection.colDirection
             )
             if (!next.insideBoard()) return null
-            return next
+            next
         }
     }
 
@@ -30,10 +31,8 @@ data class Coordinates(val row: Int, val col: Int) {
     fun nextTo(other: Coordinates): Boolean =
         abs(row - other.row) == 1 && abs(col - other.col) == 1
 
-    override fun equals(other: Any?): Boolean {
-        return if (other !is Coordinates) false
-        else row == other.row && col == other.col
-    }
+    override fun equals(other: Any?): Boolean =
+        other is Coordinates && row == other.row && col == other.col
 
     override fun hashCode(): Int {
         var result = row
@@ -57,16 +56,20 @@ data class Coordinates(val row: Int, val col: Int) {
 
     companion object {
         fun range(startCoordinates: Coordinates, endCoordinates: Coordinates): List<Coordinates> {
+            if (startCoordinates == endCoordinates) return listOf(startCoordinates)
+
             StepDirection.getDirection(startCoordinates, endCoordinates)
                 ?: throw Exception("can't create range from $startCoordinates to $endCoordinates")
 
-            val rowRange = startCoordinates.row..endCoordinates.row
-            val colRange = startCoordinates.col..endCoordinates.col
+            val rowRange = (startCoordinates.row toward endCoordinates.row)
+            val colRange = (startCoordinates.col toward endCoordinates.col)
 
             return rowRange.zip(colRange).toList().map { Coordinates(it) }
         }
 
         fun countSteps(startCoordinates: Coordinates, endCoordinates: Coordinates): Int {
+            if (startCoordinates == endCoordinates) return 0
+
             StepDirection.getDirection(startCoordinates, endCoordinates)
                 ?: throw Exception("can't create range from $startCoordinates to $endCoordinates")
 

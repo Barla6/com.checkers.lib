@@ -10,6 +10,7 @@ class StepSequence(
         .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
             board.executeStep(startCoordinates, endCoordinates)
         }
+
     fun resultBoard() = resultBoard
 
     private val piece: Piece
@@ -17,7 +18,7 @@ class StepSequence(
 
     private val lastDirection: StepDirection?
         get() =
-            if (steps.size == 1) null
+            if (steps.size <= 1) null
             else StepDirection.getDirection(steps[steps.lastIndex - 1], steps[steps.lastIndex])
 
     fun currentCoordinates() = steps.last()
@@ -32,7 +33,7 @@ class StepSequence(
         return StepSequence(startingBoard, steps + newCoordinates, eaten = false, completed = true)
     }
 
-    private fun getNextPossibleSteps(): List<StepSequence> {
+    fun getNextPossibleSteps(): List<StepSequence> {
         val directions =
             ((if (eaten) StepDirection.values() else piece.getDirections()).toList() - lastDirection).map { it!! }
 
@@ -50,26 +51,29 @@ class StepSequence(
         }
     }
 
-    fun canEat(direction: StepDirection, coordinatesToEat: Coordinates? = null): Boolean {
-        // if param "coordinatesToEat" set to null -> we take the next coordinates in the given direction.
+    fun canEat(direction: StepDirection, landingCoordinate: Coordinates? = null):Boolean {
+        // if param "landingCoordinates" set to null -> we take the coordinate 2 steps from currentCoordinate in direction.
         // if those are out of board -> return false (illegal move).
-        val coordinatesToEat = coordinatesToEat ?: currentCoordinates().step(direction) ?: return false
+        val landingCoordinate = landingCoordinate ?: currentCoordinates().step(direction, 2) ?: return false
 
-        // if there is no piece to eat -> return false.
-        val pieceToEat = resultBoard().getPieceByCoordinates(coordinatesToEat) ?: return false
+        // if the landing place is taken -> return false
+        if (resultBoard().getPieceByCoordinates(landingCoordinate) != null) return false
 
-        // if the piece to eat is not the enemy -> return false.
+        // takes the range between currentCoordinate and landingCoordinate.
+        // if its size equals 1 it means they are the same coordinate -> return false
+        val range = Coordinates.range(currentCoordinates(), landingCoordinate)
+        if (range.size == 1) return false
+
+        // takes all the pieces in range
+        val piecesInRange = range.drop(1).dropLast(1).mapNotNull { resultBoard().getPieceByCoordinates(it) }
+        // if there are no pieces to eat -> return false
+        if (piecesInRange.isEmpty()) return false
+        // if there is more than one piece to eat -> return false
+        if (piecesInRange.size > 1) return false
+
+        // if the piece to eat is not enemy -> return false
+        val pieceToEat = piecesInRange.first()
         if (!pieceToEat.enemyOf(piece)) return false
-
-        // if the "landing coordinates" are out of board -> return false.
-        val nextCoordinates = coordinatesToEat.step(direction) ?: return false
-
-        // if the "landing coordinates" are taken -> return false.
-        val pieceInNextPlace = resultBoard().getPieceByCoordinates(nextCoordinates)
-        if (pieceInNextPlace != null) return false
-
-        // if there is another piece standing in the way of eating -> return false.
-        if (!resultBoard().isRangeEmpty(currentCoordinates(), coordinatesToEat)) return false
 
         return true
     }
@@ -98,12 +102,26 @@ class StepSequence(
         return (coordinatesRange.drop(1)).mapNotNull { possibleCoordinate ->
             val numberOfSteps = Coordinates.countSteps(currentCoordinates(), possibleCoordinate)
             when {
-                canEat(direction, coordinatesToEat = possibleCoordinate) ->
+                canEat(direction, landingCoordinate = possibleCoordinate) ->
                     this.addEatingStep(direction, numberOfSteps)
                 canStep(direction, targetCoordinates = possibleCoordinate) ->
                     this.addSimpleStep(direction, numberOfSteps)
                 else -> null
             }
         }
+    }
+
+    override fun equals(other: Any?): Boolean =
+        (other is StepSequence) && (startingBoard == other.startingBoard) &&
+                (steps.size == other.steps.size) && (steps.zip(other.steps).all { (a, b) -> a==b }) &&
+                (eaten == other.eaten) && (completed == other.completed)
+
+    override fun hashCode(): Int {
+        var result = startingBoard.hashCode()
+        result = 31 * result + steps.hashCode()
+        result = 31 * result + eaten.hashCode()
+        result = 31 * result + completed.hashCode()
+        result = 31 * result + resultBoard.hashCode()
+        return result
     }
 }
