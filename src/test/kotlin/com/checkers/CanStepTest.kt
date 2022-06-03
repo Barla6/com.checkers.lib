@@ -36,8 +36,8 @@ internal class CanStepTest {
         val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.DOWN_RIGHT)
 
@@ -59,8 +59,8 @@ internal class CanStepTest {
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(enemyPiece, targetCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.DOWN_RIGHT)
 
@@ -82,8 +82,8 @@ internal class CanStepTest {
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(friendlyPiece, targetCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.DOWN_RIGHT)
 
@@ -102,8 +102,8 @@ internal class CanStepTest {
         val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.UP_RIGHT)
 
@@ -122,8 +122,8 @@ internal class CanStepTest {
         val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.DOWN_RIGHT)
 
@@ -143,8 +143,8 @@ internal class CanStepTest {
         val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.DOWN_RIGHT, targetCoordinates)
 
@@ -166,8 +166,8 @@ internal class CanStepTest {
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(enemyPiece, targetCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.DOWN_RIGHT, targetCoordinates)
 
@@ -189,8 +189,8 @@ internal class CanStepTest {
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(friendlyPiece, targetCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.DOWN_RIGHT, targetCoordinates)
 
@@ -213,8 +213,8 @@ internal class CanStepTest {
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(pieceInTheWay, pieceInTheWayCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.DOWN_RIGHT, targetCoordinates)
 
@@ -233,8 +233,8 @@ internal class CanStepTest {
         val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.canStep(StepDirection.UP_RIGHT)
 

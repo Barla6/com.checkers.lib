@@ -1,12 +1,12 @@
 package com.checkers.models
 
 import com.checkers.Constants
-import com.checkers.extensions.toward
+import com.checkers.utlis.toward
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sign
 
-data class Coordinates(val row: Int, val col: Int) {
+data class Coordinates(val row: Int, val col: Int) : Cloneable {
 
     constructor(pair: Pair<Int, Int>) : this(pair.first, pair.second)
 
@@ -22,13 +22,13 @@ data class Coordinates(val row: Int, val col: Int) {
                 currentCoordinate.col + stepDirection.colDirection
             )
             if (!next.insideBoard()) return null
-            next
+            return@fold next
         }
     }
 
-    fun cloneCoordinate(): Coordinates = Coordinates(row, col)
+    public override fun clone(): Coordinates = Coordinates(row, col)
 
-    fun nextTo(other: Coordinates): Boolean =
+    infix fun nextTo(other: Coordinates): Boolean =
         abs(row - other.row) == 1 && abs(col - other.col) == 1
 
     override fun equals(other: Any?): Boolean =
@@ -51,7 +51,7 @@ data class Coordinates(val row: Int, val col: Int) {
 
         val endCoordinates = this.step(direction, amountOfSteps)!!
 
-        return range(this, endCoordinates)
+        return range(this, endCoordinates).drop(1)
     }
 
     companion object {

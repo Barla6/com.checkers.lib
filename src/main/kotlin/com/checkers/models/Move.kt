@@ -14,7 +14,7 @@ class Move(val steps: MutableList<Coordinates> = mutableListOf()) {
 
     fun cloneMove(): Move =
         Move(
-            steps.map { coordinates -> coordinates.cloneCoordinate() } as MutableList<Coordinates>
+            steps.map { coordinates -> coordinates.clone() } as MutableList<Coordinates>
         )
 
 
@@ -24,7 +24,7 @@ class Move(val steps: MutableList<Coordinates> = mutableListOf()) {
                 other.steps.zip(steps).all { (a, b) -> a == b }
 
     fun hasEaten(): Boolean =
-        !steps.zipWithNext().all { (a,b) -> a.nextTo(b) }
+        !steps.zipWithNext().all { (a,b) -> a nextTo b }
 
     override fun hashCode(): Int {
         return steps.hashCode()

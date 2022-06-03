@@ -11,17 +11,14 @@ class Piece(
     }
 
     fun makeKingIfNeeded(coordinates: Coordinates) {
-        if (hasReachedOtherSide(coordinates)) {
+        if (type != PieceType.KING && hasReachedOtherSide(coordinates))
             this.type = PieceType.KING
-        }
     }
 
     fun clone(): Piece = Piece(player, type)
 
-    private fun hasReachedOtherSide(coordinates: Coordinates): Boolean {
-        return if (type == PieceType.KING) false
-        else player.crowningRow == coordinates.row
-    }
+    private fun hasReachedOtherSide(coordinates: Coordinates): Boolean =
+        player.crowningRow == coordinates.row
 
     override fun equals(other: Any?): Boolean =
         (other is Piece) && (type == other.type) && (player == other.player)

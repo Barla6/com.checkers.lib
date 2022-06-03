@@ -102,12 +102,10 @@ class Board(
 
     fun isRangeEmpty(startCoordinates: Coordinates, endCoordinates: Coordinates): Boolean {
         val coordinatesRange = Coordinates.range(startCoordinates, endCoordinates)
-        return (coordinatesRange.drop(1).dropLast(1)).all { this.getPieceByCoordinates(it) == null }
+        return (coordinatesRange.drop(1).dropLast(1)).all { isCoordinateEmpty(it) }
     }
 
-    fun getPieceByMove(move: Move): Piece {
-        return getPieceByCoordinates(move.getLastPlace())!!
-    }
+    fun isCoordinateEmpty(coordinates: Coordinates): Boolean = getPieceByCoordinates(coordinates) == null
 
     private fun countPiecesOfPlayer(player: Player): Int =
         countOnBoard { piece -> piece?.player == player }
