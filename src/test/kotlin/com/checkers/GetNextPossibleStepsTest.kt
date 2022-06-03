@@ -35,8 +35,8 @@ internal class GetNextPossibleStepsTest {
         board.placePiece(blockingPiece, Coordinates(4, 1))
         board.placePiece(blockingPiece, Coordinates(6, 1))
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.getNextPossibleSteps()
 
@@ -57,8 +57,8 @@ internal class GetNextPossibleStepsTest {
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(enemyPiece, Coordinates(4, 1))
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.getNextPossibleSteps()
 
@@ -82,8 +82,8 @@ internal class GetNextPossibleStepsTest {
         board.placePiece(blockingPiece, Coordinates(4, 1))
         board.placePiece(blockingPiece, Coordinates(6, 1))
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.getNextPossibleSteps()
 
@@ -104,8 +104,8 @@ internal class GetNextPossibleStepsTest {
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(enemyPiece, Coordinates(3, 2))
 
-        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates()
-        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard()
+        Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
+        Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
         val result = spyStepSequence.getNextPossibleSteps()
 
