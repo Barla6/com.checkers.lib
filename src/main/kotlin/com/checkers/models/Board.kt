@@ -31,11 +31,12 @@ class Board(
     fun printBoard() {
         board.forEach { row ->
             println()
+            print("|")
             row.forEach { piece ->
                 val toPrint = when (piece?.player) {
-                    Player.COMPUTER -> if (piece.type == PieceType.KING) "[⬜]" else "[▫]"
-                    Player.PLAYER -> if (piece.type == PieceType.KING) "[⬛]" else "[▪]"
-                    else -> "[ ]"
+                    Player.COMPUTER -> if (piece.type == PieceType.KING) "O|" else "o|"
+                    Player.PLAYER -> if (piece.type == PieceType.KING) "X|" else "x|"
+                    else -> " |"
                 }
                 print(toPrint)
             }

@@ -1,10 +1,24 @@
 package com.checkers
 
 import com.checkers.models.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 internal class ExecuteStepTest {
+
+    private lateinit var friendlyPiece: Piece
+    private lateinit var enemyPiece: Piece
+    private lateinit var friendlyKing:Piece
+    private lateinit var startingBoard: Board
+
+    @BeforeEach
+    fun init() {
+        friendlyPiece = Piece(Player.PLAYER)
+        enemyPiece = Piece(Player.COMPUTER)
+        friendlyKing = Piece(Player.PLAYER, PieceType.KING)
+        startingBoard = Board()
+    }
 
     /**
      * moving piece one step to the crowning row.
@@ -12,16 +26,15 @@ internal class ExecuteStepTest {
      */
     @Test
     fun executeStep_becomesKing() {
-        val movingPiece = Piece(Player.PLAYER)
+        val movingPiece = friendlyPiece
         val startCoordinate = Coordinates(1, 4)
         val endCoordinate = Coordinates(movingPiece.player.crowningRow, 3)
 
-        val startingBoard = Board.emptyBoard()
         startingBoard.placePiece(movingPiece, startCoordinate)
 
         val resultBoard = startingBoard.executeStep(startCoordinate, endCoordinate)
 
-        val expected = Board.emptyBoard()
+        val expected = Board()
         expected.placePiece(movingPiece.apply { this.type = PieceType.KING }, endCoordinate)
 
         assertEquals(expected, resultBoard)
@@ -33,16 +46,15 @@ internal class ExecuteStepTest {
      */
     @Test
     fun executeStep_simple() {
-        val movingPiece = Piece(Player.PLAYER)
+        val movingPiece = friendlyPiece
         val startCoordinate = Coordinates(5, 2)
         val endCoordinate = Coordinates(4, 3)
 
-        val startingBoard = Board.emptyBoard()
         startingBoard.placePiece(movingPiece, startCoordinate)
 
         val resultBoard = startingBoard.executeStep(startCoordinate, endCoordinate)
 
-        val expected = Board.emptyBoard()
+        val expected = Board()
         expected.placePiece(movingPiece, endCoordinate)
 
         assertEquals(expected, resultBoard)
@@ -54,19 +66,18 @@ internal class ExecuteStepTest {
      */
     @Test
     fun executeStep_eating() {
-        val movingPiece = Piece(Player.PLAYER)
-        val pieceToEat = Piece(Player.COMPUTER)
+        val movingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
         val startCoordinate = Coordinates(5, 2)
         val eatCoordinate = Coordinates(4, 3)
         val endCoordinate = Coordinates(3, 4)
 
-        val startingBoard = Board.emptyBoard()
         startingBoard.placePiece(movingPiece, startCoordinate)
         startingBoard.placePiece(pieceToEat, eatCoordinate)
 
         val resultBoard = startingBoard.executeStep(startCoordinate, endCoordinate)
 
-        val expected = Board.emptyBoard()
+        val expected = Board()
         expected.placePiece(movingPiece, endCoordinate)
 
         assertEquals(expected, resultBoard)
@@ -79,19 +90,18 @@ internal class ExecuteStepTest {
     @Test
     fun executeStep_becomesKingWhileEating() {
 
-        val movingPiece = Piece(Player.PLAYER)
-        val pieceToEat = Piece(Player.COMPUTER)
+        val movingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
         val startCoordinate = Coordinates(2, 6)
         val pieceToEatCoordinate = Coordinates(1, 5)
         val endCoordinate = Coordinates(movingPiece.player.crowningRow, 4)
 
-        val startingBoard = Board.emptyBoard()
         startingBoard.placePiece(movingPiece, startCoordinate)
         startingBoard.placePiece(pieceToEat, pieceToEatCoordinate)
 
         val resultBoard = startingBoard.executeStep(startCoordinate, endCoordinate)
 
-        val expected = Board.emptyBoard()
+        val expected = Board()
         val movedPiece = Piece(movingPiece.player, PieceType.KING)
         expected.placePiece(movedPiece, endCoordinate)
 
@@ -100,16 +110,15 @@ internal class ExecuteStepTest {
 
     @Test
     fun executeStep_kingSimple() {
-        val movingPiece = Piece(Player.PLAYER, PieceType.KING)
+        val movingPiece = friendlyKing
         val startCoordinate = Coordinates(6, 3)
         val endCoordinate = Coordinates(3, 0)
 
-        val startingBoard = Board.emptyBoard()
         startingBoard.placePiece(movingPiece, startCoordinate)
 
         val resultBoard = startingBoard.executeStep(startCoordinate, endCoordinate)
 
-        val expected = Board.emptyBoard()
+        val expected = Board()
         expected.placePiece(movingPiece, endCoordinate)
 
         assertEquals(expected, resultBoard)
@@ -117,19 +126,18 @@ internal class ExecuteStepTest {
 
     @Test
     fun executeStep_kingEating() {
-        val movingPiece = Piece(Player.PLAYER, PieceType.KING)
+        val movingPiece = friendlyKing
+        val pieceToEat = enemyPiece
         val startCoordinate = Coordinates(6, 3)
-        val pieceToEat = Piece(Player.COMPUTER)
         val pieceToEatCoordinates = Coordinates(4, 1)
         val endCoordinate = Coordinates(3, 0)
 
-        val startingBoard = Board.emptyBoard()
         startingBoard.placePiece(movingPiece, startCoordinate)
         startingBoard.placePiece(pieceToEat, pieceToEatCoordinates)
 
         val resultBoard = startingBoard.executeStep(startCoordinate, endCoordinate)
 
-        val expected = Board.emptyBoard()
+        val expected = Board()
         expected.placePiece(movingPiece, endCoordinate)
 
         assertEquals(expected, resultBoard)

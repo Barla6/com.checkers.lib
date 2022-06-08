@@ -14,6 +14,7 @@ internal class CanEatTest {
     private lateinit var enemyPiece: Piece
     private lateinit var stepSequence: StepSequence
     private lateinit var spyStepSequence: StepSequence
+    private lateinit var board: Board
 
     @BeforeEach
     fun init() {
@@ -22,6 +23,7 @@ internal class CanEatTest {
         enemyPiece = Piece(Player.COMPUTER)
         stepSequence = StepSequence(Board(), listOf())
         spyStepSequence = Mockito.spy(stepSequence)
+        board = Board()
     }
 
     /**
@@ -30,12 +32,11 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_regularPiece_yes() {
-        val eatingPiece = friendlyPiece.clone()
-        val pieceToEat = enemyPiece.clone()
+        val eatingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
         val eatingPieceCoordinates = Coordinates(1, 3)
         val pieceToEatCoordinates = Coordinates(2, 4)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
 
@@ -53,10 +54,9 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_regularPiece_nothingToEat_no() {
-        val eatingPiece = friendlyPiece.clone()
+        val eatingPiece = friendlyPiece
         val eatingPieceCoordinates = Coordinates(1, 3)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
 
         Mockito.doReturn(eatingPieceCoordinates).`when`(spyStepSequence).currentCoordinates
@@ -73,12 +73,11 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_regularPiece_friendlyPieceToEat_no() {
-        val eatingPiece = friendlyPiece.clone()
-        val pieceToEat = friendlyPiece.clone()
+        val eatingPiece = friendlyPiece
+        val pieceToEat = friendlyPiece
         val eatingPieceCoordinates = Coordinates(1, 3)
         val pieceToEatCoordinates = Coordinates(2, 4)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
 
@@ -96,14 +95,13 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_regularPiece_landingPlaceTaken_no() {
-        val eatingPiece = friendlyPiece.clone()
-        val pieceToEat = enemyPiece.clone()
-        val pieceInLandingPlace = friendlyPiece.clone()
+        val eatingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
+        val pieceInLandingPlace = friendlyPiece
         val eatingPieceCoordinates = Coordinates(1, 3)
         val pieceToEatCoordinates = Coordinates(2, 4)
         val landingPlace = Coordinates(3, 5)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
         board.placePiece(pieceInLandingPlace, landingPlace)
@@ -122,10 +120,9 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_regularPiece_eatingPlaceOutOfBoard_no() {
-        val eatingPiece = friendlyPiece.clone()
+        val eatingPiece = friendlyPiece
         val eatingPieceCoordinates = Coordinates(0, 2)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
 
         Mockito.doReturn(eatingPieceCoordinates).`when`(spyStepSequence).currentCoordinates
@@ -142,12 +139,11 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_regularPiece_landingPlaceOutOfBoard_no() {
-        val eatingPiece = friendlyPiece.clone()
-        val pieceToEat = enemyPiece.clone()
+        val eatingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
         val eatingPieceCoordinates = Coordinates(1, 2)
         val pieceToEatCoordinates = Coordinates(0,1)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
 
@@ -165,13 +161,12 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_king_simpleEating_yes() {
-        val eatingPiece = friendlyKing.clone()
-        val pieceToEat = enemyPiece.clone()
+        val eatingPiece = friendlyKing
+        val pieceToEat = enemyPiece
         val eatingPieceCoordinates = Coordinates(1, 2)
         val pieceToEatCoordinates = Coordinates(2,3)
         val landingPlace = Coordinates(3,4)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
 
@@ -189,13 +184,12 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_king_distantEating_yes() {
-        val eatingPiece = friendlyKing.clone()
-        val pieceToEat = enemyPiece.clone()
+        val eatingPiece = friendlyKing
+        val pieceToEat = enemyPiece
         val eatingPieceCoordinates = Coordinates(1, 2)
         val pieceToEatCoordinates = Coordinates(4,5)
         val landingPlace = Coordinates(6, 7)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
 
@@ -213,10 +207,9 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_king_nothingToEat_no() {
-        val eatingPiece = friendlyKing.clone()
+        val eatingPiece = friendlyKing
         val eatingPieceCoordinates = Coordinates(1, 2)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
 
         Mockito.doReturn(eatingPieceCoordinates).`when`(spyStepSequence).currentCoordinates
@@ -233,13 +226,12 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_king_friendlyPieceToEat_no() {
-        val eatingPiece = friendlyKing.clone()
-        val pieceToEat = friendlyPiece.clone()
+        val eatingPiece = friendlyKing
+        val pieceToEat = friendlyPiece
         val eatingPieceCoordinates = Coordinates(1, 2)
         val pieceToEatCoordinates = Coordinates(2,3)
         val landingPlace = Coordinates(4, 5)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
 
@@ -257,15 +249,14 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_king_piecesInTheWay_no() {
-        val eatingPiece = friendlyKing.clone()
-        val pieceToEat = enemyPiece.clone()
-        val pieceInTheWay = friendlyPiece.clone()
+        val eatingPiece = friendlyKing
+        val pieceToEat = enemyPiece
+        val pieceInTheWay = friendlyPiece
         val eatingPieceCoordinates = Coordinates(1, 2)
         val pieceInTheWayCoordinates = Coordinates(3, 4)
         val pieceToEatCoordinates = Coordinates(4,5)
         val landingPlace = Coordinates(5, 6)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
         board.placePiece(pieceInTheWay, pieceInTheWayCoordinates)
@@ -284,14 +275,13 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_king_landingPlaceTaken_no() {
-        val eatingPiece = friendlyKing.clone()
-        val pieceToEat = enemyPiece.clone()
-        val pieceInLandingPlace = friendlyPiece.clone()
+        val eatingPiece = friendlyKing
+        val pieceToEat = enemyPiece
+        val pieceInLandingPlace = friendlyPiece
         val eatingPieceCoordinates = Coordinates(1, 2)
         val pieceToEatCoordinates = Coordinates(3,4)
         val landingCoordinates = Coordinates(4, 5)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
         board.placePiece(pieceInLandingPlace, landingCoordinates)
@@ -310,10 +300,9 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_king_eatingPlaceOutOfBoard_no() {
-        val eatingPiece = friendlyKing.clone()
+        val eatingPiece = friendlyKing
         val eatingPieceCoordinates = Coordinates(0, 1)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
 
         Mockito.doReturn(eatingPieceCoordinates).`when`(spyStepSequence).currentCoordinates
@@ -330,12 +319,11 @@ internal class CanEatTest {
      */
     @Test
     fun canEat_king_landingPlaceOutOfBoard_no() {
-        val eatingPiece = friendlyKing.clone()
-        val pieceToEat = enemyPiece.clone()
+        val eatingPiece = friendlyKing
+        val pieceToEat = enemyPiece
         val eatingPieceCoordinates = Coordinates(1, 2)
         val pieceToEatCoordinates = Coordinates(0, 1)
 
-        val board = Board()
         board.placePiece(eatingPiece, eatingPieceCoordinates)
         board.placePiece(pieceToEat, pieceToEatCoordinates)
 

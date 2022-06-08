@@ -4,8 +4,6 @@ import com.checkers.models.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 internal class GetNextPossibleStepsTest {
 
@@ -14,6 +12,7 @@ internal class GetNextPossibleStepsTest {
     private lateinit var friendlyKing: Piece
     private lateinit var stepSequence: StepSequence
     private lateinit var spyStepSequence: StepSequence
+    private lateinit var board: Board
 
     @BeforeEach
     fun init() {
@@ -22,15 +21,15 @@ internal class GetNextPossibleStepsTest {
         friendlyKing = Piece(Player.PLAYER, PieceType.KING)
         stepSequence = StepSequence(Board(), listOf())
         spyStepSequence = Mockito.spy(stepSequence)
+        board = Board()
     }
 
     @Test
     fun getNextPossibleSteps_regularPiece_noPossibleMoves() {
-        val thisPiece = friendlyPiece.clone()
-        val blockingPiece = friendlyPiece.clone()
+        val thisPiece = friendlyPiece
+        val blockingPiece = friendlyPiece
         val thisPieceCoordinates = Coordinates(5, 0)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(blockingPiece, Coordinates(4, 1))
         board.placePiece(blockingPiece, Coordinates(6, 1))
@@ -47,11 +46,10 @@ internal class GetNextPossibleStepsTest {
 
     @Test
     fun getNextPossibleSteps_regularPiece_canMove() {
-        val thisPiece = friendlyPiece.clone()
-        val enemyPiece = enemyPiece.clone()
+        val thisPiece = friendlyPiece
+        val enemyPiece = enemyPiece
         val thisPieceCoordinates = Coordinates(5, 0)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(enemyPiece, Coordinates(4, 1))
 
@@ -69,11 +67,10 @@ internal class GetNextPossibleStepsTest {
 
     @Test
     fun getNextPossibleSteps_king_noPossibleMoves() {
-        val thisPiece = friendlyKing.clone()
-        val blockingPiece = friendlyPiece.clone()
+        val thisPiece = friendlyKing
+        val blockingPiece = friendlyPiece
         val thisPieceCoordinates = Coordinates(5, 0)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(blockingPiece, Coordinates(4, 1))
         board.placePiece(blockingPiece, Coordinates(6, 1))
@@ -90,11 +87,10 @@ internal class GetNextPossibleStepsTest {
 
     @Test
     fun getNextPossibleSteps_king_canMove() {
-        val thisPiece = friendlyKing.clone()
-        val enemyPiece = enemyPiece.clone()
+        val thisPiece = friendlyKing
+        val enemyPiece = enemyPiece
         val thisPieceCoordinates = Coordinates(5, 0)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(enemyPiece, Coordinates(3, 2))
 

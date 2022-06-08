@@ -23,8 +23,8 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_piece_noPossibleTurns() {
-        val thisPiece = friendlyPiece.clone()
-        val blockingPiece = friendlyPiece.clone()
+        val thisPiece = friendlyPiece
+        val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingCoordinates = listOf(Coordinates(6, 2), Coordinates(6, 4))
 
@@ -42,8 +42,8 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_piece_oneStepPossible() {
-        val thisPiece = friendlyPiece.clone()
-        val blockingPiece = friendlyPiece.clone()
+        val thisPiece = friendlyPiece
+        val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingCoordinates = listOf(Coordinates(6, 2), Coordinates(5, 5))
 
@@ -68,9 +68,9 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_piece_oneEating() {
-        val thisPiece = friendlyPiece.clone()
-        val blockingPiece = friendlyPiece.clone()
-        val pieceToEat = enemyPiece.clone()
+        val thisPiece = friendlyPiece
+        val blockingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingPieceCoordinates = Coordinates(6, 2)
         val pieceToEatCoordinates = Coordinates(6, 4)
@@ -97,9 +97,9 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_piece_moreThanOneEating() {
-        val thisPiece = friendlyPiece.clone()
-        val blockingPiece = friendlyPiece.clone()
-        val pieceToEat = enemyPiece.clone()
+        val thisPiece = friendlyPiece
+        val blockingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingPieceCoordinates = Coordinates(6, 2)
         val pieceToEatCoordinates = listOf(Coordinates(6, 4), Coordinates(4, 4))
@@ -127,8 +127,8 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_king_noPossibleMoves() {
-        val thisPiece = friendlyKing.clone()
-        val blockingPiece = friendlyPiece.clone()
+        val thisPiece = friendlyKing
+        val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingPieceCoordinates = listOf(Coordinates(6, 2), Coordinates(6, 4))
 
@@ -146,8 +146,8 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_king_oneStep() {
-        val thisPiece = friendlyKing.clone()
-        val blockingPiece = friendlyPiece.clone()
+        val thisPiece = friendlyKing
+        val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingPieceCoordinates = listOf(Coordinates(6, 4), Coordinates(5, 1))
 
@@ -172,8 +172,8 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_king_oneDistantStep() {
-        val thisPiece = friendlyKing.clone()
-        val blockingPiece = friendlyPiece.clone()
+        val thisPiece = friendlyKing
+        val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingPieceCoordinates = Coordinates(6, 4)
 
@@ -209,9 +209,9 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_king_oneEating() {
-        val thisPiece = friendlyKing.clone()
-        val blockingPiece = friendlyPiece.clone()
-        val pieceToEat = enemyPiece.clone()
+        val thisPiece = friendlyKing
+        val blockingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingPieceCoordinates = Coordinates(6, 4)
         val pieceToEatCoordinates = Coordinates(5, 1)
@@ -243,9 +243,9 @@ internal class GetPossibleTurnsForPieceTest {
 
     @Test
     fun getPossibleTurnsForPiece_king_moreThanOneEating() {
-        val thisPiece = friendlyKing.clone()
-        val blockingPiece = friendlyPiece.clone()
-        val pieceToEat = enemyPiece.clone()
+        val thisPiece = friendlyKing
+        val blockingPiece = friendlyPiece
+        val pieceToEat = enemyPiece
         val startingCoordinates = Coordinates(7, 3)
         val blockingPieceCoordinates = Coordinates(6, 4)
         val pieceToEatCoordinates = listOf(Coordinates(5, 1), Coordinates(3, 1))
