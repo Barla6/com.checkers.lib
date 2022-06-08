@@ -42,9 +42,7 @@ internal class GetNextPossibleStepsTest {
 
         val expected = listOf<StepSequence>()
 
-        assertEquals(expected.size, result.size)
-        assertTrue(expected.containsAll(result))
-        assertTrue(result.containsAll(expected))
+        assertEqualLists(expected, result)
     }
 
     @Test
@@ -66,9 +64,7 @@ internal class GetNextPossibleStepsTest {
             StepSequence(Board(), listOf(Coordinates(3, 2)), eaten = true, completed = false),
         )
 
-        assertEquals(expected.size, result.size)
-        assertTrue(expected.containsAll(result))
-        assertTrue(result.containsAll(expected))
+        assertEqualLists(expected, result)
     }
 
     @Test
@@ -89,9 +85,7 @@ internal class GetNextPossibleStepsTest {
 
         val expected = listOf<StepSequence>()
 
-        assertEquals(expected.size, result.size)
-        assertTrue(expected.containsAll(result))
-        assertTrue(result.containsAll(expected))
+        assertEqualLists(expected, result)
     }
 
     @Test
@@ -118,8 +112,6 @@ internal class GetNextPossibleStepsTest {
             StepSequence(Board(), listOf(Coordinates(7, 2)), eaten = false, completed = true)
         )
 
-        assertEquals(expected.size, result.size)
-        assertTrue(expected.containsAll(result))
-        assertTrue(result.containsAll(expected))
+        assertEqualLists(expected, result)
     }
 }
