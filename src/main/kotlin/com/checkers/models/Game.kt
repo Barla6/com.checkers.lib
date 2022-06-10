@@ -1,4 +1,4 @@
-package com.checkers
+package com.checkers.models
 
 import com.checkers.models.*
 

@@ -17,7 +17,7 @@ internal class GetPossibleTurnsForPieceTest {
     fun init() {
         friendlyPiece = Piece(Player.PLAYER)
         friendlyKing = Piece(Player.PLAYER, PieceType.KING)
-        enemyPiece = Piece(Player.COMPUTER)
+        enemyPiece = Piece(friendlyPiece.player.enemy)
         startingBoard = Board()
     }
 
