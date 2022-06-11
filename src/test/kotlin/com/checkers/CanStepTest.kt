@@ -14,6 +14,7 @@ internal class CanStepTest {
     private lateinit var enemyPiece: Piece
     private lateinit var stepSequence: StepSequence
     private lateinit var spyStepSequence : StepSequence
+    private lateinit var board: Board
 
     @BeforeEach
     fun init() {
@@ -22,6 +23,7 @@ internal class CanStepTest {
         enemyPiece = Piece(Player.COMPUTER)
         stepSequence = StepSequence(Board(), listOf())
         spyStepSequence = Mockito.spy(stepSequence)
+        board = Board()
     }
 
     /**
@@ -30,10 +32,9 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_regularPiece_yes() {
-        val thisPiece = friendlyPiece.clone()
+        val thisPiece = friendlyPiece
         val thisPieceCoordinates = Coordinates(1, 3)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
         Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
@@ -50,12 +51,11 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_regularPiece_placeIsTakenByEnemy_no() {
-        val thisPiece = friendlyPiece.clone()
-        val enemyPiece = enemyPiece.clone()
+        val thisPiece = friendlyPiece
+        val enemyPiece = enemyPiece
         val thisPieceCoordinates = Coordinates(1, 3)
         val targetCoordinates = Coordinates(2, 4)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(enemyPiece, targetCoordinates)
 
@@ -73,12 +73,11 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_regularPiece_placeIsTakenByFriend_no() {
-        val thisPiece = friendlyPiece.clone()
-        val friendlyPiece = friendlyPiece.clone()
+        val thisPiece = friendlyPiece
+        val friendlyPiece = friendlyPiece
         val thisPieceCoordinates = Coordinates(1, 3)
         val targetCoordinates = Coordinates(2, 4)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(friendlyPiece, targetCoordinates)
 
@@ -96,10 +95,9 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_regularPiece_placeIsOutOfBoard_no() {
-        val thisPiece = friendlyPiece.clone()
+        val thisPiece = friendlyPiece
         val thisPieceCoordinates = Coordinates(0, 2)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
         Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
@@ -116,10 +114,9 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_king_yes() {
-        val thisPiece = friendlyKing.clone()
+        val thisPiece = friendlyKing
         val thisPieceCoordinates = Coordinates(0, 2)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
         Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
@@ -136,11 +133,10 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_king_distantStep_yes() {
-        val thisPiece = friendlyKing.clone()
+        val thisPiece = friendlyKing
         val thisPieceCoordinates = Coordinates(0, 2)
         val targetCoordinates = Coordinates(3, 5)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
         Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
@@ -157,12 +153,11 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_king_placeIsTakenByEnemy_no() {
-        val thisPiece = friendlyKing.clone()
-        val enemyPiece = enemyPiece.clone()
+        val thisPiece = friendlyKing
+        val enemyPiece = enemyPiece
         val thisPieceCoordinates = Coordinates(0, 2)
         val targetCoordinates = Coordinates(3, 5)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(enemyPiece, targetCoordinates)
 
@@ -180,12 +175,11 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_king_placeIsTakenByFriend_no() {
-        val thisPiece = friendlyKing.clone()
-        val friendlyPiece = friendlyPiece.clone()
+        val thisPiece = friendlyKing
+        val friendlyPiece = friendlyPiece
         val thisPieceCoordinates = Coordinates(0, 2)
         val targetCoordinates = Coordinates(3, 5)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(friendlyPiece, targetCoordinates)
 
@@ -203,13 +197,12 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_king_piecesInTheWay_no() {
-        val thisPiece = friendlyKing.clone()
-        val pieceInTheWay = friendlyPiece.clone()
+        val thisPiece = friendlyKing
+        val pieceInTheWay = friendlyPiece
         val thisPieceCoordinates = Coordinates(0, 2)
         val targetCoordinates = Coordinates(3, 5)
         val pieceInTheWayCoordinates = Coordinates(2, 4)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
         board.placePiece(pieceInTheWay, pieceInTheWayCoordinates)
 
@@ -227,10 +220,9 @@ internal class CanStepTest {
      */
     @Test
     fun canStep_king_placeIsOutOfBoard_no() {
-        val thisPiece = friendlyKing.clone()
+        val thisPiece = friendlyKing
         val thisPieceCoordinates = Coordinates(0, 2)
 
-        val board = Board()
         board.placePiece(thisPiece, thisPieceCoordinates)
 
         Mockito.doReturn(thisPieceCoordinates).`when`(spyStepSequence).currentCoordinates
