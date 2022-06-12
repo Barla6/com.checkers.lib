@@ -18,9 +18,9 @@ internal class CanEatTest {
 
     @BeforeEach
     fun init() {
-        friendlyPiece = Piece(Player.PLAYER)
-        friendlyKing = Piece(Player.PLAYER, PieceType.KING)
-        enemyPiece = Piece(Player.COMPUTER)
+        friendlyPiece = Piece(Player.Human(PlayerDirection.UPWARDS))
+        friendlyKing = Piece(Player.Human(PlayerDirection.UPWARDS), PieceType.KING)
+        enemyPiece = Piece(Player.Computer(PlayerDirection.DOWNWARDS))
         stepSequence = StepSequence(Board(), listOf())
         spyStepSequence = Mockito.spy(stepSequence)
         board = Board()

@@ -1,23 +1,33 @@
 package com.checkers.models
 
-enum class Player(
-    val directions: Array<StepDirection>,
-    val crowningRow: Int
-) {
-    COMPUTER(
-        directions = arrayOf(StepDirection.DOWN_RIGHT, StepDirection.DOWN_LEFT),
-        crowningRow = 7
-    ) {
-        override val enemy: Player
-            get() = PLAYER
-    },
-    PLAYER(
-        directions = arrayOf(StepDirection.UP_LEFT, StepDirection.UP_RIGHT),
-        crowningRow = 0
-    ) {
-        override val enemy: Player
-            get() = COMPUTER
-    };
+import kotlin.random.Random
 
-    abstract val enemy: Player
+sealed interface Player {
+
+    val direction: PlayerDirection
+
+    val directions
+        get() = direction.directions
+
+    val crowningRow
+        get() = direction.crowningRow
+
+    val startingRows
+        get() = direction.startingRows
+
+    fun pickBoard(stepSequences: List<StepSequence>): StepSequence {
+        return stepSequences.get(Random(stepSequences.size).nextInt())
+    }
+
+    class Computer(override val direction: PlayerDirection) : Player {
+        override fun pickBoard(stepSequences: List<StepSequence>): StepSequence {
+            return super.pickBoard(stepSequences)
+        }
+    }
+
+    class Human(override val direction: PlayerDirection) : Player {
+        override fun pickBoard(stepSequences: List<StepSequence>): StepSequence {
+            return super.pickBoard(stepSequences)
+        }
+    }
 }
