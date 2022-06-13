@@ -1,5 +1,6 @@
 package com.checkers.models
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import kotlin.random.Random
 
 class Game(val player1: Player, val player2: Player) {
@@ -13,7 +14,8 @@ class Game(val player1: Player, val player2: Player) {
 
     var winner: Player? = null
 
-    var isOver = false
+    val isOver: Boolean
+        get() = winner != null
 
     fun getOppositePlayer(player: Player): Player? =
         when(player) {

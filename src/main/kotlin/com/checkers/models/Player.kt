@@ -15,25 +15,22 @@ sealed interface Player {
     val startingRows
         get() = direction.startingRows
 
-    fun pickBoard(boardsAmount: Int): Int {
-        return (0 until boardsAmount).random()
-    }
-
-    fun playTurn(game: Game) {
-        val movesTree = MovesTree(this, game, 3)
-        val possibleSteps = movesTree.getLeadingStepsAndFinalBoards()
-        if (possibleSteps.isEmpty()) {
-            game.isOver = true
-            game.winner = game.getOppositePlayer(this)
-            return
-        }
-        val chosenIndex = pickBoard(possibleSteps.size)
-        game.board = possibleSteps.get(chosenIndex).first.resultBoard
-    }
+    fun playTurn(game: Game)
 
     class Computer(override val direction: PlayerDirection) : Player {
         override fun playTurn(game: Game) {
-            super.playTurn(game)
+            val movesTree = MovesTree(this, game, 3)
+            val possibleSteps = movesTree.getLeadingStepsAndFinalBoards()
+            if (possibleSteps.isEmpty()) {
+                game.winner = game.getOppositePlayer(this)
+                return
+            }
+            val chosenIndex = pickBoard(possibleSteps.size)
+            game.board = possibleSteps.get(chosenIndex).first.resultBoard
+        }
+
+        fun pickBoard(boardsAmount: Int): Int {
+            return (0 until boardsAmount).random()
         }
     }
 
@@ -43,7 +40,6 @@ sealed interface Player {
                     .map { StepSequence(game.board, listOf(it)) }
                     .map { it.getPossibleTurnsForPiece() }.flatten()
             if (possibleSteps.isEmpty()) {
-                game.isOver = true
                 game.winner = game.getOppositePlayer(this)
                 return
             }
