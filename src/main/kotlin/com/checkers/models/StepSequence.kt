@@ -125,4 +125,9 @@ class StepSequence(
     override fun equals(other: Any?): Boolean =
             (other is StepSequence) && (startingBoard == other.startingBoard) &&
                     (steps == other.steps) && (eaten == other.eaten) && (completed == other.completed)
+
+    fun stringStepTrace() = steps.fold(""){ string, coordinate ->
+        return@fold if (steps.last() == coordinate) string + coordinate.toString()
+        else string + coordinate.toString() + "->"
+    }
 }

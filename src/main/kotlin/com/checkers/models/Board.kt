@@ -95,9 +95,9 @@ class Board(
         board[coordinates.row][coordinates.col]
 
     fun getCoordinatesOfPlayer(player: Player): List<Coordinates> =
-        board.map { row ->
-            row.mapNotNull { piece ->
-                if (piece?.player == player) Coordinates(board.indexOf(row), row.indexOf(piece)) else null
+        board.mapIndexed() { rowIndex, row ->
+            row.mapIndexedNotNull() { colIndex, piece ->
+                if (piece?.player == player) Coordinates(rowIndex, colIndex) else null
             }
         }.flatten()
 
@@ -108,7 +108,7 @@ class Board(
 
     fun isCoordinateEmpty(coordinates: Coordinates): Boolean = getPieceByCoordinates(coordinates) == null
 
-    private fun countPiecesOfPlayer(player: Player): Int =
+    fun countPiecesOfPlayer(player: Player): Int =
         countOnBoard { piece -> piece?.player == player }
 
     private fun countRegularPiecesOfPlayer(player: Player): Int =
