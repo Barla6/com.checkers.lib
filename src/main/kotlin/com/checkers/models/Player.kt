@@ -19,8 +19,10 @@ sealed interface Player {
 
     class Computer(override val direction: PlayerDirection) : Player {
         override fun playTurn(game: Game) {
+            // todo: temporary implementation
             val movesTree = MovesTree(this, game, 3)
             val possibleSteps = movesTree.getLeadingStepsAndFinalBoards()
+
             if (possibleSteps.isEmpty()) {
                 game.winner = game.getOppositePlayer(this)
                 return
@@ -36,18 +38,23 @@ sealed interface Player {
 
     class Human(override val direction: PlayerDirection) : Player {
         override fun playTurn(game: Game) {
-            val possibleSteps = game.board.getCoordinatesOfPlayer(this)
-                    .map { StepSequence(game.board, listOf(it)) }
-                    .map { it.getPossibleTurnsForPiece() }.flatten()
+            // todo: temporary implementation
+            val movesTree = MovesTree(this, game, 1)
+            val possibleSteps = movesTree.getLeadingStepsAndFinalBoards()
+
             if (possibleSteps.isEmpty()) {
                 game.winner = game.getOppositePlayer(this)
                 return
             }
+            val chosenIndex = pickBoard(possibleSteps.map { it.first })
+            game.board = possibleSteps.get(chosenIndex).first.resultBoard
+        }
+
+        fun pickBoard(possibleSteps: List<StepSequence>): Int {
             println("insert the number of the option you choose:")
             possibleSteps.forEachIndexed { index, stepSequence -> println("${index+1}) ${stepSequence.stringStepTrace()}") }
             val read = Scanner(System.`in`)
-            val chosenIndex = read.nextInt()-1
-            game.board = possibleSteps.get(chosenIndex).resultBoard
+            return read.nextInt()-1
         }
     }
 }
