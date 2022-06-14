@@ -1,8 +1,8 @@
 package com.checkers.models
 
 class Piece(
-    val player: Player,
-    var type: PieceType = PieceType.REGULAR
+        val player: Player,
+        var type: PieceType = PieceType.REGULAR
 ) {
 
     fun getDirections(): Array<StepDirection> {
@@ -29,5 +29,5 @@ class Piece(
         return result
     }
 
-    fun enemyOf(other: Piece) = this.player == other.player.enemy
+    fun enemyOf(other: Piece) = this.player.direction oppositeTo other.player.direction
 }
