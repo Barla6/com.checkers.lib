@@ -76,4 +76,6 @@ data class Coordinates(val row: Int, val col: Int) : Cloneable {
             return abs(endCoordinates.row - startCoordinates.row)
         }
     }
+
+    override fun toString() = "[$row, $col]"
 }

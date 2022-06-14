@@ -6,20 +6,20 @@ class Board(
     private var board: Array<Array<Piece?>> = Array(Constants.ROWS_NUMBER) { Array(Constants.COLS_NUMBER) { null } }
 ) : Cloneable {
 
-    fun initGameBoard() {
+    fun initGameBoard(player1: Player, player2: Player) {
         if (board.all { row -> row.all { piece -> piece == null } }) {
             for (row in 0 until Constants.ROWS_NUMBER) {
                 for (col in 0 until Constants.COLS_NUMBER) {
 
                     if (isSquareBlack(Coordinates(row, col))) {
-                        val color = when (row) {
-                            0, 1, 2 -> Player.COMPUTER
-                            5, 6, 7 -> Player.PLAYER
+                        val player = when {
+                            player1.startingRows.contains(row) -> player1
+                            player2.startingRows.contains(row) -> player2
                             else -> null
                         }
 
-                        if (color != null) {
-                            val piece = Piece(color)
+                        if (player != null) {
+                            val piece = Piece(player)
                             board[row][col] = piece
                         }
                     }
@@ -33,9 +33,9 @@ class Board(
             println()
             print("|")
             row.forEach { piece ->
-                val toPrint = when (piece?.player) {
-                    Player.COMPUTER -> if (piece.type == PieceType.KING) "O|" else "o|"
-                    Player.PLAYER -> if (piece.type == PieceType.KING) "X|" else "x|"
+                val toPrint = when (piece?.player?.direction) {
+                    PlayerDirection.DOWNWARDS -> if (piece.type == PieceType.KING) "O|" else "o|"
+                    PlayerDirection.UPWARDS -> if (piece.type == PieceType.KING) "X|" else "x|"
                     else -> " |"
                 }
                 print(toPrint)
@@ -95,9 +95,9 @@ class Board(
         board[coordinates.row][coordinates.col]
 
     fun getCoordinatesOfPlayer(player: Player): List<Coordinates> =
-        board.map { row ->
-            row.mapNotNull { piece ->
-                if (piece?.player == player) Coordinates(board.indexOf(row), row.indexOf(piece)) else null
+        board.mapIndexed() { rowIndex, row ->
+            row.mapIndexedNotNull() { colIndex, piece ->
+                if (piece?.player == player) Coordinates(rowIndex, colIndex) else null
             }
         }.flatten()
 
@@ -108,7 +108,7 @@ class Board(
 
     fun isCoordinateEmpty(coordinates: Coordinates): Boolean = getPieceByCoordinates(coordinates) == null
 
-    private fun countPiecesOfPlayer(player: Player): Int =
+    fun countPiecesOfPlayer(player: Player): Int =
         countOnBoard { piece -> piece?.player == player }
 
     private fun countRegularPiecesOfPlayer(player: Player): Int =

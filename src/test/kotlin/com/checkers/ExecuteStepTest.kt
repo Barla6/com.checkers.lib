@@ -14,9 +14,9 @@ internal class ExecuteStepTest {
 
     @BeforeEach
     fun init() {
-        friendlyPiece = Piece(Player.PLAYER)
-        enemyPiece = Piece(Player.COMPUTER)
-        friendlyKing = Piece(Player.PLAYER, PieceType.KING)
+        friendlyPiece = Piece(Player.Human(PlayerDirection.UPWARDS))
+        enemyPiece = Piece(Player.Computer(PlayerDirection.DOWNWARDS))
+        friendlyKing = Piece(Player.Human(PlayerDirection.UPWARDS), PieceType.KING)
         startingBoard = Board()
     }
 
