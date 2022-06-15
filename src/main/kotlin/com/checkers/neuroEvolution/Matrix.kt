@@ -25,22 +25,22 @@ class Matrix() {
         data = List(rows) { List(cols) { 0.0 } }
     }
 
-    fun fillRandomData() =
-        data.map { row ->
+    fun fillRandomData() {
+        data = data.map { row ->
             row.map { Random.nextDouble(1.0) }
-        }.also { data = it }
-
+        }
+    }
 
     // rotates matrix 90 degrees to the right
     private fun rotate(): Matrix {
         return Matrix(this.cols, this.rows).apply {
-            data.mapIndexed { rowIndex, row ->
+            data = data.mapIndexed { rowIndex, row ->
                 row.mapIndexed { colIndex, _ ->
                     this@Matrix.data[colIndex][rowIndex]
                 }
             }.map { row ->
                 row.asReversed()
-            }.also { data = it }
+            }
         }
     }
 
@@ -55,14 +55,11 @@ class Matrix() {
         val rotatedOther = other.rotate()
 
         return Matrix(this.rows, other.cols).apply {
-            val result = MutableList(this.rows) { MutableList(this.cols) { 0.0 } }
-            for (i in 0 until this@Matrix.data.size) {
-                for (j in 0 until rotatedOther.data.size) {
-                    this@Matrix.data[i].zip(rotatedOther.data[j].asReversed()).sumOf { it.first * it.second }
-                        .also { result[i][j] = it }
+            data = data.mapIndexed {rowIndex, row ->
+                row.mapIndexed {colIndex, number ->
+                    this@Matrix.data[rowIndex].zip(rotatedOther.data[colIndex]).sumOf { it.first * it.second }
                 }
             }
-            data = result
         }
     }
 

@@ -16,6 +16,15 @@ fun main() {
 
 //    game.startGame()
 
+//    val matrix = Matrix.randomMatrix(3, 2)
+//    matrix.print()
+//
+//    val other = Matrix.randomMatrix(2, 3)
+//    other.print()
+//
+//    val result = matrix dot other
+//    result!!.print()
+
     val brain = NeuralNetwork()
     val input = List<Double>(NeuralNetwork.INPUT_NODES) {Random.nextDouble(1.0)}
     brain.predict(input)
