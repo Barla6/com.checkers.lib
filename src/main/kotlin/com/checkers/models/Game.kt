@@ -1,9 +1,6 @@
 package com.checkers.models
 
-import com.sun.org.apache.xpath.internal.operations.Bool
-import kotlin.random.Random
-
-class Game(val player1: Player, val player2: Player) {
+class Game(private val player1: Player, private val player2: Player) {
     var board: Board = Board()
 
     init {
@@ -14,7 +11,7 @@ class Game(val player1: Player, val player2: Player) {
 
     var winner: Player? = null
 
-    val isOver: Boolean
+    private val isOver: Boolean
         get() = winner != null
 
     fun getOppositePlayer(player: Player): Player? =
@@ -26,7 +23,7 @@ class Game(val player1: Player, val player2: Player) {
 
     fun startGame() {
         var numberOfTurns = 0
-        var player = getRandomStartingPlayer()
+        var player = getRandomPlayer()
         while(!isOver) {
             player.playTurn(this)
             numberOfTurns++
@@ -38,5 +35,5 @@ class Game(val player1: Player, val player2: Player) {
         println("numberOfTurns: $numberOfTurns")
     }
 
-    fun getRandomStartingPlayer() = if ((0..2).random() % 2 == 0) player1 else player2
+    private fun getRandomPlayer() = if ((0..2).random() % 2 == 0) player1 else player2
 }

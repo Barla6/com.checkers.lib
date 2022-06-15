@@ -1,13 +1,13 @@
 package com.checkers.models
 
 data class MovesTree(val stepSequence: StepSequence? = null) {
-    var nextSteps: List<MovesTree>? = null
+    private var nextSteps: List<MovesTree>? = null
 
     constructor(player: Player, game: Game, depth: Int = 1) : this() {
         this.nextSteps = getAllPossibleNextMoves(player, game.board, game, depth)
     }
 
-    fun getAllPossibleNextMoves(player: Player, board: Board, game: Game, depth: Int): List<MovesTree>? {
+    private fun getAllPossibleNextMoves(player: Player, board: Board, game: Game, depth: Int): List<MovesTree>? {
         if (depth == 0 ||
                 board.countPiecesOfPlayer(player) == 0 ||
                 board.countPiecesOfPlayer(game.getOppositePlayer(player)!!) == 0) return null
@@ -36,7 +36,7 @@ data class MovesTree(val stepSequence: StepSequence? = null) {
                 ?: listOf<Pair<StepSequence, Board>>()
     }
 
-    fun getFinalBoards(): List<Board> =
+    private fun getFinalBoards(): List<Board> =
             nextSteps?.map { it.getFinalBoards() }?.flatten()
                     ?: if (stepSequence?.resultBoard == null) listOf()
                     else listOf(stepSequence.resultBoard)

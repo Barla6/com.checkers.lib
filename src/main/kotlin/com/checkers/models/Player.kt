@@ -28,10 +28,10 @@ sealed interface Player {
                 return
             }
             val chosenIndex = pickBoard(possibleSteps.size)
-            game.board = possibleSteps.get(chosenIndex).first.resultBoard
+            game.board = possibleSteps[chosenIndex].first.resultBoard
         }
 
-        fun pickBoard(boardsAmount: Int): Int {
+        private fun pickBoard(boardsAmount: Int): Int {
             return (0 until boardsAmount).random()
         }
     }
@@ -47,10 +47,10 @@ sealed interface Player {
                 return
             }
             val chosenIndex = pickBoard(possibleSteps.map { it.first })
-            game.board = possibleSteps.get(chosenIndex).first.resultBoard
+            game.board = possibleSteps[chosenIndex].first.resultBoard
         }
 
-        fun pickBoard(possibleSteps: List<StepSequence>): Int {
+        private fun pickBoard(possibleSteps: List<StepSequence>): Int {
             println("insert the number of the option you choose:")
             possibleSteps.forEachIndexed { index, stepSequence -> println("${index+1}) ${stepSequence.stringStepTrace()}") }
             val read = Scanner(System.`in`)

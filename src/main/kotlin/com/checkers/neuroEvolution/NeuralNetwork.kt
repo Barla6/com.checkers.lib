@@ -1,6 +1,5 @@
 package com.checkers.neuroEvolution
 
-import javax.print.DocFlavor
 import kotlin.math.exp
 
 class NeuralNetwork {
@@ -11,17 +10,30 @@ class NeuralNetwork {
         const val OUTPUT_NODES = 1
     }
 
-    val weights_input_hidden = Matrix.randomMatrix(HIDDEN_NODES, INPUT_NODES)
-    val weights_hidden_output = Matrix.randomMatrix(OUTPUT_NODES, HIDDEN_NODES)
+    private val weights_input_hidden = Matrix.randomMatrix(HIDDEN_NODES, INPUT_NODES)
+    private val weights_hidden_output = Matrix.randomMatrix(OUTPUT_NODES, HIDDEN_NODES)
 
-    val biases_hidden = Matrix.randomMatrix(HIDDEN_NODES)
-    val biases_output = Matrix.randomMatrix(OUTPUT_NODES)
+    private val biases_hidden = Matrix.randomMatrix(HIDDEN_NODES, 1)
+    private val biases_output = Matrix.randomMatrix(OUTPUT_NODES, 1)
 
     // activation function: sigmoid
-    fun activation(x: Double) = 1 / (1 + exp(-x))
+    private fun activation(x: Double): Double = 1 / (1 + exp(-x))
 
     fun predict(input: List<Double>) {
-        val input_matrix = Matrix.fromList(input)
+        // todo: catch and log
+        if (input.size != INPUT_NODES) return
+        val inputMatrix = Matrix.fromList(input)
 
+        // todo: catch and log
+        val hidden = inputMatrix.dot(weights_input_hidden) ?: return
+        val hiddenWithBias = hidden.add(biases_hidden)
+        val hiddenAfterActivation = hiddenWithBias.map { number -> activation(number) }
+
+        // todo: catch and log
+        val output = hiddenAfterActivation.dot(weights_hidden_output) ?: return
+        val outputWithBias = output add biases_output
+        val outputAfterActivation = outputWithBias.map { number -> activation(number) }
+
+        return outputAfterActivation.print()
     }
 }

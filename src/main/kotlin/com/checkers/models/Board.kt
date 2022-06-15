@@ -75,13 +75,13 @@ class Board(
         return board
     }
 
-    fun movePiece(startCoordinates: Coordinates, endCoordinates: Coordinates) {
+    private fun movePiece(startCoordinates: Coordinates, endCoordinates: Coordinates) {
         val pieceToMove = removePiece(startCoordinates)!!
         placePiece(pieceToMove, endCoordinates)
         pieceToMove.makeKingIfNeeded(endCoordinates)
     }
 
-    fun removePiece(coordinates: Coordinates): Piece? {
+    private fun removePiece(coordinates: Coordinates): Piece? {
         val removedPiece = getPieceByCoordinates(coordinates)
         placePiece(null, coordinates)
         return removedPiece
@@ -95,8 +95,8 @@ class Board(
         board[coordinates.row][coordinates.col]
 
     fun getCoordinatesOfPlayer(player: Player): List<Coordinates> =
-        board.mapIndexed() { rowIndex, row ->
-            row.mapIndexedNotNull() { colIndex, piece ->
+        board.mapIndexed { rowIndex, row ->
+            row.mapIndexedNotNull { colIndex, piece ->
                 if (piece?.player == player) Coordinates(rowIndex, colIndex) else null
             }
         }.flatten()
