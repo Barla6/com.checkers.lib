@@ -25,7 +25,13 @@ fun main() {
 //    val result = matrix dot other
 //    result!!.print()
 
-    val brain = NeuralNetwork()
-    val input = List<Double>(NeuralNetwork.INPUT_NODES) {Random.nextDouble(1.0)}
+    val brain = NeuralNetwork(32, 16, 1)
+    val input = List(32) {Random.nextDouble(1.0)}
     brain.predict(input)
+
+//    val matrix = Matrix.randomMatrix(3, 2)
+//    matrix.print()
+//    val rotated = matrix.rotate()
+//    rotated.print()
+
 }

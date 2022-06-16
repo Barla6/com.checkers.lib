@@ -2,15 +2,13 @@ package com.checkers.neuroEvolution
 
 import kotlin.random.Random
 
-class Matrix() {
-    private var rows: Int = 0
-    private var cols: Int = 0
-    private var data: List<List<Double>> = listOf()
+class Matrix(private val rows: Int = 1, private val cols: Int = 1) {
+    private var data: List<List<Double>> = List(rows) { List(cols) {0.0} }
 
     companion object {
-        fun randomMatrix(rows: Int = 1, cols: Int = 1) =
+        fun randomMatrix(rows: Int = 1, cols: Int = 1, min: Double = 0.0, max: Double = 1.0) =
             Matrix(cols, rows).apply {
-                fillRandomData()
+                fillRandomData(min, max)
             }
 
         fun fromList(list: List<Double>): Matrix =
@@ -19,20 +17,14 @@ class Matrix() {
             }
     }
 
-    constructor(rows: Int = 1, cols: Int = 1) : this() {
-        this.cols = cols
-        this.rows = rows
-        data = List(rows) { List(cols) { 0.0 } }
-    }
-
-    fun fillRandomData() {
+    fun fillRandomData(min: Double = 0.0, max: Double = 1.0) {
         data = data.map { row ->
-            row.map { Random.nextDouble(1.0) }
+            row.map { Random.nextDouble(min,max) }
         }
     }
 
     // rotates matrix 90 degrees to the right
-    private fun rotate(): Matrix {
+    fun rotate(): Matrix {
         return Matrix(this.cols, this.rows).apply {
             data = data.mapIndexed { rowIndex, row ->
                 row.mapIndexed { colIndex, _ ->
@@ -56,7 +48,7 @@ class Matrix() {
 
         return Matrix(this.rows, other.cols).apply {
             data = data.mapIndexed {rowIndex, row ->
-                row.mapIndexed {colIndex, number ->
+                row.mapIndexed { colIndex, _ ->
                     this@Matrix.data[rowIndex].zip(rotatedOther.data[colIndex]).sumOf { it.first * it.second }
                 }
             }
