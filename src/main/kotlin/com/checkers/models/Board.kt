@@ -137,4 +137,24 @@ class Board(
             return emptyBoard
         }
     }
+
+    // todo: maybe move to other place
+    fun toNeuralNetworkInput(player: Player): List<Double> {
+        return board.mapIndexedNotNull { rowIndex, row ->
+            row.mapIndexedNotNull { colIndex, piece ->
+                if (!isSquareBlack(Coordinates(rowIndex, colIndex))) return@mapIndexedNotNull null
+                when (piece?.player) {
+                    player -> when (piece.type) {
+                        PieceType.REGULAR -> 1.0
+                        PieceType.KING -> 2.0
+                    }
+                    null -> 0.0
+                    else -> when(piece.type) {
+                        PieceType.REGULAR-> -1.0
+                        PieceType.KING-> -2.0
+                    }
+                }
+            }
+        }.flatten()
+    }
 }

@@ -3,7 +3,7 @@ package com.checkers.neuroEvolution
 import kotlin.random.Random
 
 class Matrix(private val rows: Int = 1, private val cols: Int = 1) {
-    private var data: List<List<Double>> = List(rows) { List(cols) {0.0} }
+    internal var data: List<List<Double>> = List(rows) { List(cols) {0.0} }
 
     companion object {
         fun randomMatrix(rows: Int = 1, cols: Int = 1, min: Double = 0.0, max: Double = 1.0) =

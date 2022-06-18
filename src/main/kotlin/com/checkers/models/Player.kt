@@ -1,5 +1,6 @@
 package com.checkers.models
 
+import com.checkers.neuroEvolution.NeuralNetwork
 import java.util.*
 
 sealed interface Player {
@@ -17,7 +18,10 @@ sealed interface Player {
 
     fun playTurn(game: Game)
 
-    class Computer(override val direction: PlayerDirection) : Player {
+    class Computer(
+        override val direction: PlayerDirection,
+        public val brain: NeuralNetwork
+    ) : Player {
         override fun playTurn(game: Game) {
             // todo: temporary implementation
             val movesTree = MovesTree(this, game, 3)
@@ -27,12 +31,15 @@ sealed interface Player {
                 game.winner = game.getOppositePlayer(this)
                 return
             }
-            val chosenIndex = pickBoard(possibleSteps.size)
+            val chosenIndex = pickBoard(possibleSteps.map { it.second })
             game.board = possibleSteps[chosenIndex].first.resultBoard
         }
 
-        private fun pickBoard(boardsAmount: Int): Int {
-            return (0 until boardsAmount).random()
+        private fun pickBoard(boards: List<Board>): Int {
+            val rates = boards.map { brain.predict(it.toNeuralNetworkInput(this))!! }
+            return rates.fold(0) { indexOfBest, rate ->
+                if (rate > rates[indexOfBest]) rates.indexOf(rate) else indexOfBest
+            }
         }
     }
 
@@ -52,9 +59,9 @@ sealed interface Player {
 
         private fun pickBoard(possibleSteps: List<StepSequence>): Int {
             println("insert the number of the option you choose:")
-            possibleSteps.forEachIndexed { index, stepSequence -> println("${index+1}) ${stepSequence.stringStepTrace()}") }
+            possibleSteps.forEachIndexed { index, stepSequence -> println("${index + 1}) ${stepSequence.stringStepTrace()}") }
             val read = Scanner(System.`in`)
-            return read.nextInt()-1
+            return read.nextInt() - 1
         }
     }
 }

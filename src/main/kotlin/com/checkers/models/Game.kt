@@ -2,6 +2,11 @@ package com.checkers.models
 
 class Game(private val player1: Player, private val player2: Player) {
     var board: Board = Board()
+    private var turnCounter = 0
+
+    companion object {
+        const val MAX_TURNS = 120
+    }
 
     init {
         if (!(player1.direction oppositeTo player2.direction))
@@ -12,28 +17,27 @@ class Game(private val player1: Player, private val player2: Player) {
     var winner: Player? = null
 
     private val isOver: Boolean
-        get() = winner != null
+        get() = winner != null || turnCounter >= MAX_TURNS
 
-    fun getOppositePlayer(player: Player): Player? =
-        when(player) {
+    fun getOppositePlayer(player: Player): Player =
+        when (player) {
             player1 -> player2
             player2 -> player1
-            else -> null
+            else -> throw IllegalStateException("????")
         }
 
-    fun startGame() {
-        var numberOfTurns = 0
+    fun runGame() {
         var player = getRandomPlayer()
-        while(!isOver) {
+        while (!isOver) {
             player.playTurn(this)
-            numberOfTurns++
+            turnCounter++
             board.printBoard()
-            player = getOppositePlayer(player)!!
+            player = getOppositePlayer(player)
         }
         println("game over")
-        println("winner: ${winner!!.direction}")
-        println("numberOfTurns: $numberOfTurns")
+        println("winner: ${winner?.direction ?: "tie"}")
+        println("numberOfTurns: $turnCounter")
     }
 
-    private fun getRandomPlayer() = if ((0..2).random() % 2 == 0) player1 else player2
+    private fun getRandomPlayer() = listOf(player1, player2).random()
 }
