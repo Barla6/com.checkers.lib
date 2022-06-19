@@ -1,18 +1,15 @@
 package com.checkers
 
 import com.checkers.models.Game
-import com.checkers.neuroEvolution.Matrix
-import com.checkers.models.MovesTree
-import com.checkers.models.Player
-import com.checkers.models.PlayerDirection
-import com.checkers.neuroEvolution.Evolution
+import com.checkers.models.player.AIPicker
+import com.checkers.models.player.Computer
+import com.checkers.models.player.Human
 import com.checkers.neuroEvolution.NeuralNetwork
-import kotlin.random.Random
 
 fun main() {
 
     val brain = NeuralNetwork(32, 16, 1)
-    val game = Game(Player.Computer(PlayerDirection.DOWNWARDS, brain), Player.Human(PlayerDirection.UPWARDS))
+    val game = Game(Computer(AIPicker(brain)), Human())
 
     game.board.printBoard()
 

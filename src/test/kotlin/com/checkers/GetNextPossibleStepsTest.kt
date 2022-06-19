@@ -1,12 +1,17 @@
 package com.checkers
 
 import com.checkers.models.*
+import com.checkers.models.player.Human
+import com.checkers.models.player.Player
+import com.checkers.models.player.PlayerDirection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 internal class GetNextPossibleStepsTest {
 
+    private lateinit var friendlyPlayer: Player
+    private lateinit var enemyPlayer: Player
     private lateinit var friendlyPiece: Piece
     private lateinit var enemyPiece: Piece
     private lateinit var friendlyKing: Piece
@@ -16,9 +21,13 @@ internal class GetNextPossibleStepsTest {
 
     @BeforeEach
     fun init() {
-        friendlyPiece = Piece(Player.Human(PlayerDirection.UPWARDS))
-        enemyPiece = Piece(Player.Computer(PlayerDirection.DOWNWARDS))
-        friendlyKing = Piece(Player.Human(PlayerDirection.UPWARDS), PieceType.KING)
+        friendlyPlayer = Player(Human(), PlayerDirection.UPWARDS)
+        enemyPlayer = Player(Human(), PlayerDirection.DOWNWARDS)
+        enemyPlayer.oppositePlayer = friendlyPlayer
+        friendlyPlayer.oppositePlayer = enemyPlayer
+        friendlyPiece = Piece(friendlyPlayer)
+        enemyPiece = Piece(enemyPlayer)
+        friendlyKing = Piece(friendlyPlayer, PieceType.KING)
         stepSequence = StepSequence(Board(), listOf())
         spyStepSequence = Mockito.spy(stepSequence)
         board = Board()

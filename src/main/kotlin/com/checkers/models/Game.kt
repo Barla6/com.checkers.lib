@@ -1,43 +1,45 @@
 package com.checkers.models
 
-class Game(private val player1: Player, private val player2: Player) {
+import com.checkers.models.player.Player
+import com.checkers.models.player.PlayerDirection
+import com.checkers.models.player.PlayerType
+
+class Game(playerType1: PlayerType, playerType2: PlayerType) {
+
     var board: Board = Board()
     private var turnCounter = 0
+    private val player1: Player
+    private val player2: Player
+    var winner: Player? = null
+
+    private val isOver: Boolean
+        get() = winner != null || turnCounter >= MAX_TURNS
+
 
     companion object {
         const val MAX_TURNS = 120
     }
 
     init {
-        if (!(player1.direction oppositeTo player2.direction))
-            throw Throwable("can't create game with 2 players in the same direction")
+        player1 = Player(playerType1, PlayerDirection.UPWARDS)
+        player2 = Player(playerType2, PlayerDirection.DOWNWARDS)
+        player1.oppositePlayer = player2
+        player2.oppositePlayer = player1
         board.initGameBoard(player1, player2)
     }
 
-    var winner: Player? = null
-
-    private val isOver: Boolean
-        get() = winner != null || turnCounter >= MAX_TURNS
-
-    fun getOppositePlayer(player: Player): Player =
-        when (player) {
-            player1 -> player2
-            player2 -> player1
-            else -> throw IllegalStateException("????")
-        }
+    private fun getRandomPlayer() = listOf(player1, player2).random()
 
     fun runGame() {
         var player = getRandomPlayer()
         while (!isOver) {
-            player.playTurn(this)
+            player.playTurn()
             turnCounter++
             board.printBoard()
-            player = getOppositePlayer(player)
+            player = player.oppositePlayer
         }
         println("game over")
-        println("winner: ${winner?.direction ?: "tie"}")
+        println("winner: ${winner?.playerDirection ?: "tie"}")
         println("numberOfTurns: $turnCounter")
     }
-
-    private fun getRandomPlayer() = listOf(player1, player2).random()
 }

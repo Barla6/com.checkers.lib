@@ -1,9 +1,11 @@
-package com.checkers.models
+package com.checkers.models.player
+
+import com.checkers.models.StepDirection
 
 enum class PlayerDirection(
-        val directions: Array<StepDirection>,
-        val crowningRow: Int,
-        val startingRows: List<Int>
+    val directions: Array<StepDirection>,
+    val crowningRow: Int,
+    val startingRows: List<Int>
 ) {
     DOWNWARDS(
             directions = arrayOf(StepDirection.DOWN_RIGHT, StepDirection.DOWN_LEFT),

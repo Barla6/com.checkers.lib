@@ -1,20 +1,20 @@
 package com.checkers.neuroEvolution
 
 import com.checkers.models.Game
-import com.checkers.models.Player
-import com.checkers.models.PlayerDirection
+import com.checkers.models.player.AIPicker
+import com.checkers.models.player.Computer
 
 class GamesManager(private val population: Population) {
 
     fun runGames() {
         population.population.forEach { player ->
-            val player1 = Player.Computer(PlayerDirection.UPWARDS, player)
+            val player1 = Computer(AIPicker(player))
             population.population.forEach { contestant ->
                 if (player != contestant) {
-                    val player2 = Player.Computer(PlayerDirection.DOWNWARDS, contestant)
+                    val player2 = Computer(AIPicker(contestant))
                     val game = Game(player1, player2)
                     game.runGame()
-                    (game.winner as? Player.Computer)?.brain?.addWinning()
+                    ((game.winner?.type as? Computer)?.picker as? AIPicker)?.brain?.addWinning()
                 }
             }
         }
@@ -24,7 +24,7 @@ class GamesManager(private val population: Population) {
         println("WINNING STATS: ")
         println(" index | winnings ")
         population.population.forEachIndexed { index, neuralNetwork ->
-            println("  $index  |  ${neuralNetwork.winningsNumber}  ")
+            println("  $index  |  ${neuralNetwork.winningsCount}  ")
         }
     }
 }

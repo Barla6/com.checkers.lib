@@ -1,5 +1,7 @@
 package com.checkers.neuroEvolution
 
+import com.checkers.models.Board
+import com.checkers.models.player.Player
 import kotlin.math.exp
 
 class NeuralNetwork(private val input_nodes: Int,
@@ -12,7 +14,8 @@ class NeuralNetwork(private val input_nodes: Int,
     private val biases_hidden = Matrix.randomMatrix(hidden_nodes, 1)
     private val biases_output = Matrix.randomMatrix(output_nodes, 1)
 
-    var winningsNumber = 0
+    var winningsCount = 0
+    fun addWinning() = winningsCount++
 
     val DNA = listOf(
         weights_input_hidden.data.flatten(),
@@ -24,23 +27,22 @@ class NeuralNetwork(private val input_nodes: Int,
     // activation function: sigmoid
     private fun activation(x: Double): Double = 1 / (1 + exp(-x))
 
-    fun predict(input: List<Double>): Double? {
-        // todo: catch and log
-        if (input.size != input_nodes) return null
+    fun rate(inputBoard:Board, player: Player): Double {
+        return this.rate(inputBoard.toNeuralNetworkInput(player))
+    }
+
+    private fun rate(input: List<Double>): Double {
+        if (input.size != input_nodes) throw Throwable("input size to NN is not ok")
         val inputMatrix = Matrix.fromList(input)
 
-        // todo: catch and log
-        val hidden = inputMatrix.dot(weights_input_hidden) ?: return null
+        val hidden = inputMatrix.dot(weights_input_hidden)
         val hiddenWithBias = hidden.add(biases_hidden)
         val hiddenAfterActivation = hiddenWithBias.map { number -> activation(number) }
 
-        // todo: catch and log
-        val output = hiddenAfterActivation.dot(weights_hidden_output) ?: return null
+        val output = hiddenAfterActivation.dot(weights_hidden_output)
         val outputWithBias = output add biases_output
         val outputAfterActivation = outputWithBias.map { number -> activation(number) }
 
         return outputAfterActivation.data.first().first()
     }
-
-    fun addWinning() = winningsNumber++
 }

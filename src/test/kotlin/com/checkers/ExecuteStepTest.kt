@@ -1,12 +1,17 @@
 package com.checkers
 
 import com.checkers.models.*
+import com.checkers.models.player.Human
+import com.checkers.models.player.Player
+import com.checkers.models.player.PlayerDirection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 internal class ExecuteStepTest {
 
+    private lateinit var friendlyPlayer: Player
+    private lateinit var enemyPlayer: Player
     private lateinit var friendlyPiece: Piece
     private lateinit var enemyPiece: Piece
     private lateinit var friendlyKing:Piece
@@ -14,9 +19,13 @@ internal class ExecuteStepTest {
 
     @BeforeEach
     fun init() {
-        friendlyPiece = Piece(Player.Human(PlayerDirection.UPWARDS))
-        enemyPiece = Piece(Player.Computer(PlayerDirection.DOWNWARDS))
-        friendlyKing = Piece(Player.Human(PlayerDirection.UPWARDS), PieceType.KING)
+        friendlyPlayer = Player(Human(), PlayerDirection.UPWARDS)
+        enemyPlayer = Player(Human(), PlayerDirection.DOWNWARDS)
+        enemyPlayer.oppositePlayer = friendlyPlayer
+        friendlyPlayer.oppositePlayer = enemyPlayer
+        friendlyPiece = Piece(friendlyPlayer)
+        enemyPiece = Piece(enemyPlayer)
+        friendlyKing = Piece(friendlyPlayer, PieceType.KING)
         startingBoard = Board()
     }
 
@@ -28,7 +37,7 @@ internal class ExecuteStepTest {
     fun executeStep_becomesKing() {
         val movingPiece = friendlyPiece
         val startCoordinate = Coordinates(1, 4)
-        val endCoordinate = Coordinates(movingPiece.player.crowningRow, 3)
+        val endCoordinate = Coordinates(movingPiece.player.playerDirection.crowningRow, 3)
 
         startingBoard.placePiece(movingPiece, startCoordinate)
 
@@ -94,7 +103,7 @@ internal class ExecuteStepTest {
         val pieceToEat = enemyPiece
         val startCoordinate = Coordinates(2, 6)
         val pieceToEatCoordinate = Coordinates(1, 5)
-        val endCoordinate = Coordinates(movingPiece.player.crowningRow, 4)
+        val endCoordinate = Coordinates(movingPiece.player.playerDirection.crowningRow, 4)
 
         startingBoard.placePiece(movingPiece, startCoordinate)
         startingBoard.placePiece(pieceToEat, pieceToEatCoordinate)
