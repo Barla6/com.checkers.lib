@@ -11,6 +11,8 @@ class NeuralNetwork(
     val output_nodes: Int
 ) {
 
+    var name: String by initOnce()
+
     private var weights_input_hidden: Matrix by initOnce()
     private var weights_hidden_output: Matrix by initOnce()
 
@@ -25,7 +27,7 @@ class NeuralNetwork(
     val fitness: Double?
         get() {
             return if (gamesCounter == 0) null
-            else (winningsCount / gamesCounter).toDouble()
+            else winningsCount / gamesCounter.toDouble()
         }
 
     val DNA: DNA

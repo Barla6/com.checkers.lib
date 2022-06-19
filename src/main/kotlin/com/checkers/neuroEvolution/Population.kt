@@ -2,7 +2,7 @@ package com.checkers.neuroEvolution
 
 import kotlin.random.Random
 
-class Population(val population: List<NeuralNetwork>) {
+class Population(val population: List<NeuralNetwork>, val generationNumber: Int) {
 
     fun repopulate(): Population {
         return Population((population.indices)
@@ -14,7 +14,8 @@ class Population(val population: List<NeuralNetwork>) {
                 crossover(parents.first, parents.second)
             }.map { child ->
                 mutation(child, 0.01)
-            }
+            },
+            generationNumber+1
         )
     }
 
@@ -63,10 +64,12 @@ class Population(val population: List<NeuralNetwork>) {
     }
 
     companion object {
-        fun generatePopulation(amount: Int): Population {
+        fun generatePopulation(amount: Int, generationNumber: Int): Population {
             return Population(List(amount) {
                 NeuralNetwork.randomNeuralNetwork(32, 16, 1)
-            })
+            }, generationNumber).apply {
+                population.forEachIndexed { index, nn -> nn.name = "g$generationNumber-i$index"}
+            }
         }
     }
 }

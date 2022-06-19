@@ -7,12 +7,12 @@ import com.checkers.models.player.PlayerType
 class Game(playerType1: PlayerType, playerType2: PlayerType) {
 
     var board: Board = Board()
-    private var turnCounter = 0
-    private val player1: Player
-    private val player2: Player
+    var turnCounter = 0
+    val player1: Player
+    val player2: Player
     var winner: Player? = null
 
-    private val isOver: Boolean
+    val isOver: Boolean
         get() = winner != null || turnCounter >= MAX_TURNS
 
 
@@ -28,18 +28,16 @@ class Game(playerType1: PlayerType, playerType2: PlayerType) {
         board.initGameBoard(player1, player2)
     }
 
-    private fun getRandomPlayer() = listOf(player1, player2).random()
+    fun getRandomPlayer() = listOf(player1, player2).random()
 
-    fun runGame() {
-        var player = getRandomPlayer()
-        while (!isOver) {
-            player.playTurn()
-            turnCounter++
-            board.printBoard()
-            player = player.oppositePlayer
-        }
-        println("game over")
-        println("winner: ${winner?.playerDirection ?: "tie"}")
-        println("numberOfTurns: $turnCounter")
+    fun updateGame(board: Board, player: Player) {
+        this.board = board
+        turnCounter++
+
+        if (checkIfWon(player)) winner = player
+    }
+
+    private fun checkIfWon(player: Player): Boolean {
+        return board.countPiecesOfPlayer(player.oppositePlayer) == 0
     }
 }
