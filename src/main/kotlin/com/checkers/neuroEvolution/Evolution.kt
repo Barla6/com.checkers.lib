@@ -7,5 +7,6 @@ class Evolution {
         val gamesManager = GamesManager(population)
         gamesManager.runGames()
         gamesManager.printWinningStats()
+
     }
 }
