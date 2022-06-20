@@ -1,9 +1,10 @@
 package com.checkers.models
 
 import com.checkers.models.player.Player
+import com.checkers.utlis.initOnce
 
 data class MovesTree(val stepSequence: StepSequence? = null) {
-    private var nextSteps: List<MovesTree>? = null
+    var nextSteps: List<MovesTree>? by initOnce()
 
     constructor(startPlayer: Player,board: Board, depth: Int = 1) : this() {
         nextSteps = getAllPossibleNextMoves(startPlayer, board, depth)

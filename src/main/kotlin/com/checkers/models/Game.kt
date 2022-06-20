@@ -30,14 +30,37 @@ class Game(playerType1: PlayerType, playerType2: PlayerType) {
 
     fun getRandomPlayer() = listOf(player1, player2).random()
 
-    fun updateGame(board: Board, player: Player) {
-        this.board = board
+    fun playTurn(stepSequence: StepSequence, humanPlayer: Player) {
+        if (stepSequence.startingBoard != board) throw Throwable("step sequence is not valid")
+
+        board = stepSequence.resultBoard
+        board.printBoard()
         turnCounter++
 
-        if (checkIfWon(player)) winner = player
+        winner = checkForWinner()
+
+        if (isOver) return
+
+        val computerPlayer = humanPlayer.oppositePlayer
+        val turnResult = computerPlayer.playTurn(board)
+        if (turnResult == null) {
+            winner = humanPlayer
+            return
+        }
+        board = turnResult
+        board.printBoard()
+        turnCounter++
+        winner = checkForWinner()
+        if (isOver) return
+
+        if (MovesTree(humanPlayer, board, 1).nextSteps!!.isEmpty()) winner = computerPlayer
     }
 
-    private fun checkIfWon(player: Player): Boolean {
-        return board.countPiecesOfPlayer(player.oppositePlayer) == 0
+    private fun checkForWinner(): Player? {
+        return when {
+            board.countPiecesOfPlayer(player1) == 0 -> player2
+            board.countPiecesOfPlayer(player2) == 0 -> player1
+            else -> null
+        }
     }
 }

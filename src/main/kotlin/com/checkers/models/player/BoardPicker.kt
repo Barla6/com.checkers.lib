@@ -12,7 +12,7 @@ class AIPicker(val brain: NeuralNetwork): BoardPicker {
         require(boards.isNotEmpty())
         val bestBoard = boards
             .mapIndexed { a, b -> a to brain.rate(b, player) }
-            .maxByOrNull { it.second!! }
+            .maxByOrNull { it.second }
         return boards[bestBoard!!.first]
     }
 }
