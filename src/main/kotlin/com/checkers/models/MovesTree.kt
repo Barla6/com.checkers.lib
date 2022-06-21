@@ -1,6 +1,5 @@
 package com.checkers.models
 
-import com.checkers.models.player.Player
 import com.checkers.utlis.initOnce
 
 data class MovesTree(val stepSequence: StepSequence? = null) {

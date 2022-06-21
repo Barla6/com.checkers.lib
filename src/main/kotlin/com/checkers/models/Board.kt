@@ -1,8 +1,6 @@
 package com.checkers.models
 
 import com.checkers.Constants
-import com.checkers.models.player.Player
-import com.checkers.models.player.PlayerDirection
 
 class Board(
     private var board: Array<Array<Piece?>> = Array(Constants.ROWS_NUMBER) { Array(Constants.COLS_NUMBER) { null } }

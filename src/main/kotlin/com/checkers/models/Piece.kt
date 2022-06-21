@@ -1,7 +1,5 @@
 package com.checkers.models
 
-import com.checkers.models.player.Player
-
 class Piece(
     val player: Player,
     var type: PieceType = PieceType.REGULAR

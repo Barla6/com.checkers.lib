@@ -8,7 +8,7 @@ class Matrix(private val rows: Int = 1, private val cols: Int = 1) {
 
     companion object {
         fun randomMatrix(rows: Int = 1, cols: Int = 1, min: Double = 0.0, max: Double = 1.0) =
-            Matrix(cols, rows, min, max)
+            Matrix(rows, cols, min, max)
 
         fun fromList(rows: Int = 1, cols: Int = 1, list: List<Double>): Matrix {
             if (rows*cols != list.size) throw Throwable("can't create matrix from list")
@@ -20,12 +20,6 @@ class Matrix(private val rows: Int = 1, private val cols: Int = 1) {
     private constructor(rows: Int = 1, cols: Int = 1, min: Double = 0.0, max: Double = 1.0) : this(rows, cols) {
         fillRandomData(min, max)
     }
-
-//    private constructor(rows: Int = 1, cols: Int = 1, list: List<Double>) : this(rows, cols) {
-//        data = List(rows) { List(cols) { 0.0 } }.map { row ->
-//            row.mapIndexed { index, _ -> list[index] }
-//        }
-//    }
 
     private constructor(rows: Int = 1, cols: Int = 1, list: List<Double>): this(rows, cols) {
         data = (0 until rows).map { rowIndex ->

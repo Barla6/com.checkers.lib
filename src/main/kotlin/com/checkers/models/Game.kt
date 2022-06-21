@@ -1,15 +1,9 @@
 package com.checkers.models
 
-import com.checkers.models.player.Player
-import com.checkers.models.player.PlayerDirection
-import com.checkers.models.player.PlayerType
-
-class Game(playerType1: PlayerType, playerType2: PlayerType) {
+class Game(val player1: Player, val player2: Player) {
 
     var board: Board = Board()
     var turnCounter = 0
-    val player1: Player
-    val player2: Player
     var winner: Player? = null
 
     val isOver: Boolean
@@ -21,10 +15,14 @@ class Game(playerType1: PlayerType, playerType2: PlayerType) {
     }
 
     init {
-        player1 = Player(playerType1, PlayerDirection.UPWARDS)
-        player2 = Player(playerType2, PlayerDirection.DOWNWARDS)
-        player1.oppositePlayer = player2
-        player2.oppositePlayer = player1
+        player1.apply {
+            oppositePlayer = player2
+            playerDirection = PlayerDirection.UPWARDS
+        }
+        player2.apply {
+            oppositePlayer = player1
+            playerDirection = PlayerDirection.DOWNWARDS
+        }
         board.initGameBoard(player1, player2)
     }
 
@@ -41,7 +39,7 @@ class Game(playerType1: PlayerType, playerType2: PlayerType) {
 
         if (isOver) return
 
-        val computerPlayer = humanPlayer.oppositePlayer
+        val computerPlayer = humanPlayer.oppositePlayer as AIPlayer
         val turnResult = computerPlayer.playTurn(board)
         if (turnResult == null) {
             winner = humanPlayer
@@ -61,6 +59,18 @@ class Game(playerType1: PlayerType, playerType2: PlayerType) {
             board.countPiecesOfPlayer(player1) == 0 -> player2
             board.countPiecesOfPlayer(player2) == 0 -> player1
             else -> null
+        }
+    }
+
+    fun printGameDetails() {
+        if (isOver) {
+            println("GAME OVER")
+            println("players: ${player1.name} VS ${player2.name}")
+            if (winner != null) println("WINNER: ${this.winner?.name}")
+            else println("It's a TIE")
+            println("turnsCount: ${this.turnCounter}")
+        } else {
+            println("game in progress...")
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.checkers.neuroEvolution
 
 import com.checkers.models.Board
-import com.checkers.models.player.Player
+import com.checkers.models.Player
 import com.checkers.utlis.initOnce
 import kotlin.math.exp
 
@@ -41,18 +41,18 @@ class NeuralNetwork(
     companion object {
         fun randomNeuralNetwork(input_nodes: Int, hidden_nodes: Int, output_nodes: Int): NeuralNetwork =
             NeuralNetwork(input_nodes, hidden_nodes, output_nodes).apply {
-                weights_input_hidden = Matrix.randomMatrix(hidden_nodes, input_nodes)
-                weights_hidden_output = Matrix.randomMatrix(output_nodes, hidden_nodes)
-                biases_hidden = Matrix.randomMatrix(hidden_nodes, 1)
-                biases_output = Matrix.randomMatrix(output_nodes, 1)
+                weights_input_hidden = Matrix.randomMatrix(input_nodes, hidden_nodes)
+                weights_hidden_output = Matrix.randomMatrix(hidden_nodes, output_nodes)
+                biases_hidden = Matrix.randomMatrix(cols = hidden_nodes)
+                biases_output = Matrix.randomMatrix(cols = output_nodes)
             }
 
         fun fromDNA(input_nodes: Int, hidden_nodes: Int, output_nodes: Int, dna: DNA): NeuralNetwork =
             NeuralNetwork(input_nodes, hidden_nodes, output_nodes).apply {
-                weights_input_hidden = Matrix.fromList(hidden_nodes, input_nodes, dna[0])
-                weights_hidden_output = Matrix.fromList(output_nodes, hidden_nodes, dna[1])
-                biases_hidden = Matrix.fromList(rows = hidden_nodes, list = dna[2])
-                biases_output = Matrix.fromList(rows = output_nodes, list = dna[3])
+                weights_input_hidden = Matrix.fromList(input_nodes, hidden_nodes, dna[0])
+                weights_hidden_output = Matrix.fromList(hidden_nodes, output_nodes, dna[1])
+                biases_hidden = Matrix.fromList(cols = hidden_nodes, list = dna[2])
+                biases_output = Matrix.fromList(cols = output_nodes, list = dna[3])
             }
     }
 
