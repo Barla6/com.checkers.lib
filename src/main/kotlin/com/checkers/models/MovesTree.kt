@@ -1,31 +1,30 @@
 package com.checkers.models
 
-data class MovesTree(val stepSequence: StepSequence? = null) {
-    var nextSteps: List<MovesTree>? = null
+import com.checkers.models.player.Player
+import com.checkers.utlis.initOnce
 
-    constructor(player: Player, game: Game, depth: Int = 1) : this() {
-        this.nextSteps = getAllPossibleNextMoves(player, game.board, game, depth)
+data class MovesTree(val stepSequence: StepSequence? = null) {
+    var nextSteps: List<MovesTree>? by initOnce()
+
+    constructor(startPlayer: Player,board: Board, depth: Int = 1) : this() {
+        nextSteps = getAllPossibleNextMoves(startPlayer, board, depth)
     }
 
-    fun getAllPossibleNextMoves(player: Player, board: Board, game: Game, depth: Int): List<MovesTree>? {
+    private fun getAllPossibleNextMoves(player: Player, board: Board, depth: Int): List<MovesTree>? {
         if (depth == 0 ||
                 board.countPiecesOfPlayer(player) == 0 ||
-                board.countPiecesOfPlayer(game.getOppositePlayer(player)!!) == 0) return null
-        val nextMoves = board.getCoordinatesOfPlayer(player)
+                board.countPiecesOfPlayer(player.oppositePlayer) == 0) return null
+
+        return board.getCoordinatesOfPlayer(player)
                 .map { StepSequence(board.clone(), listOf(it)) }
-                .map { it.getPossibleTurnsForPiece() }
-                .flatten()
-                .map { MovesTree(it) }
-
-        nextMoves.forEach {
-            it.nextSteps = getAllPossibleNextMoves(
-                    game.getOppositePlayer(player)!!,
-                    it.stepSequence!!.resultBoard,
-                    game,
-                    depth - 1)
-        }
-
-        return nextMoves
+                .flatMap { it.getPossibleTurnsForPiece() }
+                .map(::MovesTree)
+                .onEach {
+                    it.nextSteps = getAllPossibleNextMoves(
+                        player.oppositePlayer,
+                        it.stepSequence!!.resultBoard,
+                        depth - 1)
+                }
     }
 
     /**
@@ -33,10 +32,10 @@ data class MovesTree(val stepSequence: StepSequence? = null) {
      */
     fun getLeadingStepsAndFinalBoards(): List<Pair<StepSequence, Board>> {
         return nextSteps?.map { movesTree -> movesTree.getFinalBoards().map { Pair(movesTree.stepSequence!!, it) } }?.flatten()
-                ?: listOf<Pair<StepSequence, Board>>()
+                ?: listOf()
     }
 
-    fun getFinalBoards(): List<Board> =
+    private fun getFinalBoards(): List<Board> =
             nextSteps?.map { it.getFinalBoards() }?.flatten()
                     ?: if (stepSequence?.resultBoard == null) listOf()
                     else listOf(stepSequence.resultBoard)

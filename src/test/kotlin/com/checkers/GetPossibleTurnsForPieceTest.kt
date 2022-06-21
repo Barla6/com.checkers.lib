@@ -1,6 +1,9 @@
 package com.checkers
 
 import com.checkers.models.*
+import com.checkers.models.player.Human
+import com.checkers.models.player.Player
+import com.checkers.models.player.PlayerDirection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -8,6 +11,8 @@ import kotlin.test.assertTrue
 
 internal class GetPossibleTurnsForPieceTest {
 
+    private lateinit var friendlyPlayer: Player
+    private lateinit var enemyPlayer: Player
     private lateinit var friendlyKing: Piece
     private lateinit var friendlyPiece: Piece
     private lateinit var enemyPiece: Piece
@@ -15,9 +20,13 @@ internal class GetPossibleTurnsForPieceTest {
 
     @BeforeEach
     fun init() {
-        friendlyPiece = Piece(Player.Human(PlayerDirection.UPWARDS))
-        friendlyKing = Piece(Player.Human(PlayerDirection.UPWARDS), PieceType.KING)
-        enemyPiece = Piece(Player.Computer(PlayerDirection.DOWNWARDS))
+        friendlyPlayer = Player(Human(), PlayerDirection.UPWARDS)
+        enemyPlayer = Player(Human(), PlayerDirection.DOWNWARDS)
+        enemyPlayer.oppositePlayer = friendlyPlayer
+        friendlyPlayer.oppositePlayer = enemyPlayer
+        friendlyPiece = Piece(friendlyPlayer)
+        enemyPiece = Piece(enemyPlayer)
+        friendlyKing = Piece(friendlyPlayer, PieceType.KING)
         startingBoard = Board()
     }
 

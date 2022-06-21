@@ -2,14 +2,37 @@ package com.checkers
 
 import com.checkers.models.Game
 import com.checkers.models.MovesTree
-import com.checkers.models.Player
-import com.checkers.models.PlayerDirection
+import com.checkers.models.player.AIPicker
+import com.checkers.models.player.Computer
+import com.checkers.models.player.Human
+import com.checkers.neuroEvolution.Evolution
+import com.checkers.neuroEvolution.Matrix
+import com.checkers.neuroEvolution.NeuralNetwork
+import java.util.*
+import kotlin.random.Random
 
 fun main() {
 
-    val game = Game(Player.Computer(PlayerDirection.DOWNWARDS), Player.Human(PlayerDirection.UPWARDS))
+//    val brain = NeuralNetwork.randomNeuralNetwork(32, 16, 1)
+//    val game = Game(Computer(AIPicker(brain)), Human())
+//
+//    game.board.printBoard()
+//
+//    GameRunner.runGame(game)
 
-    game.board.printBoard()
+//    val matrix = Matrix.randomMatrix(3, 2)
+//    matrix.print()
+//
+//    val other = Matrix.randomMatrix(2, 3)
+//    other.print()
+//
+//    val result = matrix dot other
+//    result!!.print()
 
-    game.startGame()
+//    val brain = NeuralNetwork(32, 16, 1)
+//    val input = List(32) { Random.nextDouble(1.0)}
+//    val rate = brain.rate(input)
+//    println(rate)
+
+    Evolution().draw(5)
 }

@@ -1,6 +1,8 @@
 package com.checkers.models
 
 import com.checkers.Constants
+import com.checkers.models.player.Player
+import com.checkers.models.player.PlayerDirection
 
 class Board(
     private var board: Array<Array<Piece?>> = Array(Constants.ROWS_NUMBER) { Array(Constants.COLS_NUMBER) { null } }
@@ -13,8 +15,8 @@ class Board(
 
                     if (isSquareBlack(Coordinates(row, col))) {
                         val player = when {
-                            player1.startingRows.contains(row) -> player1
-                            player2.startingRows.contains(row) -> player2
+                            player1.playerDirection.startingRows.contains(row) -> player1
+                            player2.playerDirection.startingRows.contains(row) -> player2
                             else -> null
                         }
 
@@ -33,7 +35,7 @@ class Board(
             println()
             print("|")
             row.forEach { piece ->
-                val toPrint = when (piece?.player?.direction) {
+                val toPrint = when (piece?.player?.playerDirection) {
                     PlayerDirection.DOWNWARDS -> if (piece.type == PieceType.KING) "O|" else "o|"
                     PlayerDirection.UPWARDS -> if (piece.type == PieceType.KING) "X|" else "x|"
                     else -> " |"
@@ -75,13 +77,13 @@ class Board(
         return board
     }
 
-    fun movePiece(startCoordinates: Coordinates, endCoordinates: Coordinates) {
+    private fun movePiece(startCoordinates: Coordinates, endCoordinates: Coordinates) {
         val pieceToMove = removePiece(startCoordinates)!!
         placePiece(pieceToMove, endCoordinates)
         pieceToMove.makeKingIfNeeded(endCoordinates)
     }
 
-    fun removePiece(coordinates: Coordinates): Piece? {
+    private fun removePiece(coordinates: Coordinates): Piece? {
         val removedPiece = getPieceByCoordinates(coordinates)
         placePiece(null, coordinates)
         return removedPiece
@@ -95,8 +97,8 @@ class Board(
         board[coordinates.row][coordinates.col]
 
     fun getCoordinatesOfPlayer(player: Player): List<Coordinates> =
-        board.mapIndexed() { rowIndex, row ->
-            row.mapIndexedNotNull() { colIndex, piece ->
+        board.mapIndexed { rowIndex, row ->
+            row.mapIndexedNotNull { colIndex, piece ->
                 if (piece?.player == player) Coordinates(rowIndex, colIndex) else null
             }
         }.flatten()
@@ -130,11 +132,23 @@ class Board(
         return board.contentDeepHashCode()
     }
 
-    companion object {
-        fun emptyBoard(): Board {
-            val emptyBoard = Board()
-            emptyBoard.board = Array(Constants.ROWS_NUMBER) { Array(Constants.COLS_NUMBER) { null } }
-            return emptyBoard
-        }
+    // todo: maybe move to other place
+    fun toNeuralNetworkInput(player: Player): List<Double> {
+        return board.mapIndexed { rowIndex, row ->
+            row.mapIndexedNotNull { colIndex, piece ->
+                if (!isSquareBlack(Coordinates(rowIndex, colIndex))) return@mapIndexedNotNull null
+                when (piece?.player) {
+                    player -> when (piece.type) {
+                        PieceType.REGULAR -> 1.0
+                        PieceType.KING -> 2.0
+                    }
+                    null -> 0.0
+                    else -> when (piece.type) {
+                        PieceType.REGULAR -> -1.0
+                        PieceType.KING -> -2.0
+                    }
+                }
+            }
+        }.flatten()
     }
 }
