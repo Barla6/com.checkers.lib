@@ -21,12 +21,6 @@ class Matrix(private val rows: Int = 1, private val cols: Int = 1) {
         fillRandomData(min, max)
     }
 
-//    private constructor(rows: Int = 1, cols: Int = 1, list: List<Double>) : this(rows, cols) {
-//        data = List(rows) { List(cols) { 0.0 } }.map { row ->
-//            row.mapIndexed { index, _ -> list[index] }
-//        }
-//    }
-
     private constructor(rows: Int = 1, cols: Int = 1, list: List<Double>): this(rows, cols) {
         data = (0 until rows).map { rowIndex ->
             (0 until cols).map { colIndex ->

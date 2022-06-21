@@ -1,9 +1,6 @@
 package com.checkers
 
 import com.checkers.models.*
-import com.checkers.models.player.Human
-import com.checkers.models.player.Player
-import com.checkers.models.player.PlayerDirection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -23,8 +20,12 @@ internal class CanEatTest {
 
     @BeforeEach
     fun init() {
-        friendlyPlayer = Player(Human(), PlayerDirection.UPWARDS)
-        enemyPlayer = Player(Human(), PlayerDirection.DOWNWARDS)
+        friendlyPlayer = HumanPlayer("friend").apply {
+            playerDirection = PlayerDirection.DOWNWARDS
+        }
+        enemyPlayer = HumanPlayer("enemy").apply {
+            playerDirection = PlayerDirection.UPWARDS
+        }
         friendlyPlayer.oppositePlayer = enemyPlayer
         enemyPlayer.oppositePlayer = friendlyPlayer
         friendlyPiece = Piece(friendlyPlayer)

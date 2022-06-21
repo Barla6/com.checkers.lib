@@ -1,7 +1,7 @@
 package com.checkers.neuroEvolution
 
 import com.checkers.models.Board
-import com.checkers.models.player.Player
+import com.checkers.models.Player
 import com.checkers.utlis.initOnce
 import kotlin.math.exp
 

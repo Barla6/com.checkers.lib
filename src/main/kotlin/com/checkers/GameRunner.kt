@@ -1,10 +1,6 @@
 package com.checkers
 
-import com.checkers.models.Game
-import com.checkers.models.MovesTree
-import com.checkers.models.player.Computer
-import com.checkers.models.player.Human
-import com.checkers.models.player.Player
+import com.checkers.models.*
 import java.util.*
 
 object GameRunner {
@@ -14,14 +10,14 @@ object GameRunner {
     }
 
     private fun checkGameType(game: Game): GameType {
-        return when (game.player1.type) {
-            is Human -> when (game.player2.type) {
-                is Human -> GameType.HUMAN_VS_HUMAN
-                is Computer -> GameType.HUMAN_VS_COMPUTER
+        return when (game.player1) {
+            is HumanPlayer -> when (game.player2) {
+                is HumanPlayer -> GameType.HUMAN_VS_HUMAN
+                is AIPlayer -> GameType.HUMAN_VS_COMPUTER
             }
-            is Computer -> when (game.player2.type) {
-                is Human -> GameType.HUMAN_VS_COMPUTER
-                is Computer -> GameType.COMPUTER_VS_COMPUTER
+            is AIPlayer -> when (game.player2) {
+                is HumanPlayer -> GameType.HUMAN_VS_COMPUTER
+                is AIPlayer -> GameType.COMPUTER_VS_COMPUTER
             }
         }
     }
@@ -53,12 +49,12 @@ enum class GameType {
         }
 
         private fun getHumanPlayer(game: Game): Player {
-            return listOf(game.player1, game.player2).find { it.type is Human }!!
+            return listOf(game.player1, game.player2).find { it is HumanPlayer }!!
         }
     },
     COMPUTER_VS_COMPUTER {
         override fun runGame(game: Game) {
-            var player = game.getRandomPlayer()
+            var player = game.getRandomPlayer() as AIPlayer
             while (!game.isOver) {
                 val newBoard = player.playTurn(game.board)
                 game.turnCounter++
@@ -69,7 +65,7 @@ enum class GameType {
                 } else {
                     game.winner = player
                 }
-                player = player.oppositePlayer
+                player = player.oppositePlayer as AIPlayer
             }
 
             println("GAME OVER")

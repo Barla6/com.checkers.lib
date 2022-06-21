@@ -1,9 +1,7 @@
 package com.checkers
 
 import com.checkers.models.*
-import com.checkers.models.player.Human
-import com.checkers.models.player.Player
-import com.checkers.models.player.PlayerDirection
+import com.checkers.models.PlayerDirection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -21,10 +19,14 @@ internal class GetNextPossibleStepsTest {
 
     @BeforeEach
     fun init() {
-        friendlyPlayer = Player(Human(), PlayerDirection.UPWARDS)
-        enemyPlayer = Player(Human(), PlayerDirection.DOWNWARDS)
-        enemyPlayer.oppositePlayer = friendlyPlayer
+        friendlyPlayer = HumanPlayer("friend").apply {
+            playerDirection = PlayerDirection.UPWARDS
+        }
+        enemyPlayer = HumanPlayer("enemy").apply {
+            playerDirection = PlayerDirection.DOWNWARDS
+        }
         friendlyPlayer.oppositePlayer = enemyPlayer
+        enemyPlayer.oppositePlayer = friendlyPlayer
         friendlyPiece = Piece(friendlyPlayer)
         enemyPiece = Piece(enemyPlayer)
         friendlyKing = Piece(friendlyPlayer, PieceType.KING)
