@@ -18,6 +18,7 @@ class AIPlayer(val brain: NeuralNetwork): Player() {
     }
 
     private fun pickBoard(boards: List<Board>): Board {
+        // todo: run async all the rates
         val bestBoard = boards
             .mapIndexed { a, b -> a to brain.rate(b, this) }
             .maxByOrNull { it.second }

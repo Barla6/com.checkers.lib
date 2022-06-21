@@ -8,7 +8,7 @@ class Matrix(private val rows: Int = 1, private val cols: Int = 1) {
 
     companion object {
         fun randomMatrix(rows: Int = 1, cols: Int = 1, min: Double = 0.0, max: Double = 1.0) =
-            Matrix(cols, rows, min, max)
+            Matrix(rows, cols, min, max)
 
         fun fromList(rows: Int = 1, cols: Int = 1, list: List<Double>): Matrix {
             if (rows*cols != list.size) throw Throwable("can't create matrix from list")

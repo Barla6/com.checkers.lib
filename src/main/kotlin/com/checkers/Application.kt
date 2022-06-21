@@ -31,5 +31,5 @@ fun main() {
 //    val rate = brain2.rate(input)
 //    println(rate)
 //
-//    Evolution().draw(5)
+    Evolution().draw(5)
 }

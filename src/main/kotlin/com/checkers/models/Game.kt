@@ -16,12 +16,12 @@ class Game(val player1: Player, val player2: Player) {
 
     init {
         player1.apply {
-            this.oppositePlayer = player2
-            this.playerDirection = PlayerDirection.UPWARDS
+            oppositePlayer = player2
+            playerDirection = PlayerDirection.UPWARDS
         }
         player2.apply {
-            this.oppositePlayer = player1
-            this.playerDirection = PlayerDirection.DOWNWARDS
+            oppositePlayer = player1
+            playerDirection = PlayerDirection.DOWNWARDS
         }
         board.initGameBoard(player1, player2)
     }
@@ -59,6 +59,18 @@ class Game(val player1: Player, val player2: Player) {
             board.countPiecesOfPlayer(player1) == 0 -> player2
             board.countPiecesOfPlayer(player2) == 0 -> player1
             else -> null
+        }
+    }
+
+    fun printGameDetails() {
+        if (isOver) {
+            println("GAME OVER")
+            println("players: ${player1.name} VS ${player2.name}")
+            if (winner != null) println("WINNER: ${this.winner?.name}")
+            else println("It's a TIE")
+            println("turnsCount: ${this.turnCounter}")
+        } else {
+            println("game in progress...")
         }
     }
 }

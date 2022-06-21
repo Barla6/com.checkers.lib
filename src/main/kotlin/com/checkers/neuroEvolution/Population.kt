@@ -7,6 +7,11 @@ class Population(
     private val generationNumber: Int,
     private val mutationRate: Double
 ) {
+    private fun minimumFitness(): Double = population.minOfOrNull { it.fitness!! }!!
+
+    init {
+        population.forEachIndexed { index, nn -> nn.name = "g$generationNumber-i$index" }
+    }
 
     fun repopulate(): Population {
         return Population((population.indices)
@@ -25,16 +30,16 @@ class Population(
     }
 
     private fun selectParent(partner: NeuralNetwork? = null): NeuralNetwork {
-        val fitnessSum = population.sumOf { it.fitness!! }
-        val neuralNetworkAndFitness = population.map { Pair(it, it.fitness!! / fitnessSum) }
-        var randomParent = neuralNetworkAndFitness.random()
-        val randomProbability = Random.nextDouble(0.0, 1.0)
+        // todo: not good
+
+        var randomParent = population.random()
+        val randomProbability = Random.nextDouble(minimumFitness(), 1.0)
         var foundParent = false
         while (!foundParent) {
-            if (randomParent.first != partner && randomProbability < randomParent.second) foundParent = true
-            randomParent = neuralNetworkAndFitness.random()
+            foundParent = randomParent != partner && randomProbability > randomParent.fitness!!
+            randomParent = population.random()
         }
-        return randomParent.first
+        return randomParent
     }
 
     private fun crossover(parent1: NeuralNetwork, parent2: NeuralNetwork): NeuralNetwork {
@@ -71,9 +76,7 @@ class Population(
         fun generatePopulation(amount: Int, generationNumber: Int): Population {
             return Population(List(amount) {
                 NeuralNetwork.randomNeuralNetwork(32, 16, 1)
-            }, generationNumber, 0.01).apply {
-                population.forEachIndexed { index, nn -> nn.name = "g$generationNumber-i$index" }
-            }
+            }, generationNumber, 0.01)
         }
     }
 }

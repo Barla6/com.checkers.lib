@@ -7,6 +7,7 @@ object GameRunner {
 
     fun runGame(game: Game) {
         checkGameType(game).runGame(game)
+        game.printGameDetails()
     }
 
     private fun checkGameType(game: Game): GameType {
@@ -67,11 +68,6 @@ enum class GameType {
                 }
                 player = player.oppositePlayer as AIPlayer
             }
-
-            println("GAME OVER")
-            println("players: ${game.player1.name} VS ${game.player2.name}")
-            println("WINNER: ${game.winner?.name ?: "tie"}")
-            println("turnsCount: ${game.turnCounter}")
         }
     };
 
