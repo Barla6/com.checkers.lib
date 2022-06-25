@@ -32,7 +32,7 @@ class Game(val player1: Player, val player2: Player) {
         if (stepSequence.startingBoard != board) throw Throwable("step sequence is not valid")
 
         board = stepSequence.resultBoard
-        board.printBoard()
+        board.print()
         turnCounter++
 
         winner = checkForWinner()
@@ -46,7 +46,7 @@ class Game(val player1: Player, val player2: Player) {
             return
         }
         board = turnResult
-        board.printBoard()
+        board.print()
         turnCounter++
         winner = checkForWinner()
         if (isOver) return

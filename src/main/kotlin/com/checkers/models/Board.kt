@@ -1,15 +1,18 @@
 package com.checkers.models
 
-import com.checkers.Constants
-
 class Board(
-    private var board: Array<Array<Piece?>> = Array(Constants.ROWS_NUMBER) { Array(Constants.COLS_NUMBER) { null } }
+    private var board: Array<Array<Piece?>> = Array(ROWS_NUMBER) { Array(COLS_NUMBER) { null } }
 ) : Cloneable {
 
+    companion object {
+        const val ROWS_NUMBER : Int = 8
+        const val COLS_NUMBER : Int = 8
+    }
+
     fun initGameBoard(player1: Player, player2: Player) {
-        if (board.all { row -> row.all { piece -> piece == null } }) {
-            for (row in 0 until Constants.ROWS_NUMBER) {
-                for (col in 0 until Constants.COLS_NUMBER) {
+        if (isEmpty()) {
+            for (row in 0 until ROWS_NUMBER) {
+                for (col in 0 until COLS_NUMBER) {
 
                     if (isSquareBlack(Coordinates(row, col))) {
                         val player = when {
@@ -28,7 +31,7 @@ class Board(
         }
     }
 
-    fun printBoard() {
+    fun print() {
         board.forEach { row ->
             println()
             print("|")
@@ -44,27 +47,39 @@ class Board(
         println()
     }
 
-    public override fun clone(): Board {
-        val bla = Board(board.map { row ->
-            row.map { piece ->
-                piece?.clone()
-            }.toTypedArray()
-        }.toTypedArray())
-        return bla
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other !is Board) false
-        else board.all { row ->
-            row.all { piece ->
-                piece == other.board[board.indexOf(row)][row.indexOf(piece)]
-            }
-        }
-    }
+    // checks on board:
 
     private fun isSquareBlack(coordinates: Coordinates) =
         coordinates.col % 2 == (coordinates.row + 1) % 2
 
+    private fun isEmpty() = board.all { row -> row.all { piece -> piece == null } }
+
+    fun isRangeEmpty(startCoordinates: Coordinates, endCoordinates: Coordinates): Boolean {
+        val coordinatesRange = Coordinates.range(startCoordinates, endCoordinates)
+        return (coordinatesRange.drop(1).dropLast(1)).all { isCoordinateEmpty(it) }
+    }
+
+    fun isCoordinateEmpty(coordinates: Coordinates): Boolean = getPieceByCoordinates(coordinates) == null
+
+    /**
+     * @param - function that defines the condition of the count
+     * @return - the number counted
+     */
+    private fun countOnBoard(condition: (piece: Piece?) -> Boolean): Int =
+        board.sumOf { row ->
+            row.count { piece -> condition(piece) }
+        }
+
+    fun countPiecesOfPlayer(player: Player): Int =
+        countOnBoard { piece -> piece?.player == player }
+
+    private fun countRegularPiecesOfPlayer(player: Player): Int =
+        countOnBoard { piece -> piece?.player == player && piece.type == PieceType.REGULAR }
+
+    private fun countKingsOfPlayer(player: Player): Int =
+        countOnBoard { piece -> piece?.player == player && piece.type == PieceType.KING }
+
+    // operations on board:
     fun executeStep(startCoordinates: Coordinates, endCoordinates: Coordinates): Board {
         val board = clone()
 
@@ -101,35 +116,6 @@ class Board(
             }
         }.flatten()
 
-    fun isRangeEmpty(startCoordinates: Coordinates, endCoordinates: Coordinates): Boolean {
-        val coordinatesRange = Coordinates.range(startCoordinates, endCoordinates)
-        return (coordinatesRange.drop(1).dropLast(1)).all { isCoordinateEmpty(it) }
-    }
-
-    fun isCoordinateEmpty(coordinates: Coordinates): Boolean = getPieceByCoordinates(coordinates) == null
-
-    fun countPiecesOfPlayer(player: Player): Int =
-        countOnBoard { piece -> piece?.player == player }
-
-    private fun countRegularPiecesOfPlayer(player: Player): Int =
-        countOnBoard { piece -> piece?.player == player && piece.type == PieceType.REGULAR }
-
-    private fun countKingsOfPlayer(player: Player): Int =
-        countOnBoard { piece -> piece?.player == player && piece.type == PieceType.KING }
-
-    /**
-     * @param - function that defines the condition of the count
-     * @return - the number counted
-     */
-    private fun countOnBoard(condition: (piece: Piece?) -> Boolean): Int =
-        board.sumOf { row ->
-            row.count { piece -> condition(piece) }
-        }
-
-    override fun hashCode(): Int {
-        return board.contentDeepHashCode()
-    }
-
     // todo: maybe move to other place
     fun toNeuralNetworkInput(player: Player): List<Double> {
         return board.mapIndexed { rowIndex, row ->
@@ -148,5 +134,27 @@ class Board(
                 }
             }
         }.flatten()
+    }
+
+    override fun hashCode(): Int {
+        return board.contentDeepHashCode()
+    }
+
+    public override fun clone(): Board {
+        val bla = Board(board.map { row ->
+            row.map { piece ->
+                piece?.clone()
+            }.toTypedArray()
+        }.toTypedArray())
+        return bla
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other !is Board) false
+        else board.all { row ->
+            row.all { piece ->
+                piece == other.board[board.indexOf(row)][row.indexOf(piece)]
+            }
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.checkers.models
 
-import com.checkers.Constants
 import com.checkers.utlis.toward
 import kotlin.math.abs
 import kotlin.math.min
@@ -11,7 +10,7 @@ data class Coordinates(val row: Int, val col: Int) : Cloneable {
     constructor(pair: Pair<Int, Int>) : this(pair.first, pair.second)
 
     private fun insideBoard(): Boolean {
-        return this.row in 0 until Constants.ROWS_NUMBER && this.col in 0 until Constants.COLS_NUMBER
+        return this.row in 0 until Board.ROWS_NUMBER && this.col in 0 until Board.COLS_NUMBER
     }
 
     fun step(stepDirection: StepDirection, numberOfSteps: Int = 1): Coordinates? {

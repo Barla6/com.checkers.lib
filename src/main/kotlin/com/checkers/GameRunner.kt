@@ -40,12 +40,12 @@ enum class GameType {
                 val leadingStepsAndFinalBoards = movesTree.getLeadingStepsAndFinalBoards()
 
                 println("choose move:")
-                leadingStepsAndFinalBoards.map { it.first }.forEachIndexed { index, step ->
+                leadingStepsAndFinalBoards.map { it.leadingStep }.forEachIndexed { index, step ->
                     println("${index+1}) ${step.stringStepTrace()}")
                 }
                 val chosenStepIndex = reader.nextInt()-1
 
-                game.playTurn(leadingStepsAndFinalBoards[chosenStepIndex].first, humanPlayer)
+                game.playTurn(leadingStepsAndFinalBoards[chosenStepIndex].leadingStep, humanPlayer)
             }
         }
 
@@ -62,7 +62,7 @@ enum class GameType {
                 if (newBoard != null) {
                     game.board = newBoard
                     if (game.board.countPiecesOfPlayer(player.oppositePlayer) == 0) game.winner = player
-                    game.board.printBoard()
+                    game.board.print()
                 } else {
                     game.winner = player
                 }
