@@ -1,6 +1,8 @@
 package com.checkers.neuroEvolution
 
+import com.checkers.models.AIPlayer
 import com.checkers.models.Board
+import com.checkers.models.Game
 import com.checkers.models.Player
 import com.checkers.utlis.initOnce
 import kotlin.math.exp
@@ -13,46 +15,51 @@ class NeuralNetwork(
 
     var name: String by initOnce()
 
-    private var weights_input_hidden: Matrix by initOnce()
-    private var weights_hidden_output: Matrix by initOnce()
+    private var weightsInputHidden: Matrix by initOnce()
+    private var weightsHiddenOutput: Matrix by initOnce()
 
-    private var biases_hidden: Matrix by initOnce()
-    private var biases_output: Matrix by initOnce()
+    private var biasesHidden: Matrix by initOnce()
+    private var biasesOutput: Matrix by initOnce()
 
-    var winningsCount = 0
-    fun addWinning() = winningsCount++
+    var fitness: Double = 0.0
 
-    var gamesCounter = 0
+    fun updateFitness(game: Game) {
+        val thisPlayer by lazy { listOf(game.player1, game.player2).first { (it as? AIPlayer)?.brain == this } }
+        val otherPlayer by lazy { listOf(game.player1, game.player2).first { (it as? AIPlayer)?.brain != this } }
+        val thisPlayerPiecesLeft by lazy { game.board.countPiecesOfPlayer(thisPlayer).toDouble() }
+        val otherPlayerPiecesLeft by lazy { game.board.countPiecesOfPlayer(otherPlayer).toDouble() }
 
-    val fitness: Double?
-        get() {
-            return if (gamesCounter == 0) null
-            else winningsCount / gamesCounter.toDouble()
+        when (game.winner as? AIPlayer) {
+            null ->
+                fitness = fitness.minus(otherPlayerPiecesLeft / 12).plus(thisPlayerPiecesLeft)
+            thisPlayer ->
+                fitness = fitness.plus(1 - otherPlayerPiecesLeft / 12)
         }
+    }
 
-    val DNA: DNA
+    val dna: DNA
         get() = listOf(
-        weights_input_hidden.data.flatten(),
-        weights_hidden_output.data.flatten(),
-        biases_hidden.data.flatten(),
-        biases_output.data.flatten()
-    )
+            weightsInputHidden.data.flatten(),
+            weightsHiddenOutput.data.flatten(),
+            biasesHidden.data.flatten(),
+            biasesOutput.data.flatten()
+        )
 
     companion object {
         fun randomNeuralNetwork(input_nodes: Int, hidden_nodes: Int, output_nodes: Int): NeuralNetwork =
             NeuralNetwork(input_nodes, hidden_nodes, output_nodes).apply {
-                weights_input_hidden = Matrix.randomMatrix(input_nodes, hidden_nodes)
-                weights_hidden_output = Matrix.randomMatrix(hidden_nodes, output_nodes)
-                biases_hidden = Matrix.randomMatrix(cols = hidden_nodes)
-                biases_output = Matrix.randomMatrix(cols = output_nodes)
+                weightsInputHidden = Matrix.randomMatrix(input_nodes, hidden_nodes)
+                weightsHiddenOutput = Matrix.randomMatrix(hidden_nodes, output_nodes)
+                biasesHidden = Matrix.randomMatrix(cols = hidden_nodes)
+                biasesOutput = Matrix.randomMatrix(cols = output_nodes)
             }
 
         fun fromDNA(input_nodes: Int, hidden_nodes: Int, output_nodes: Int, dna: DNA): NeuralNetwork =
             NeuralNetwork(input_nodes, hidden_nodes, output_nodes).apply {
-                weights_input_hidden = Matrix.fromList(input_nodes, hidden_nodes, dna[0])
-                weights_hidden_output = Matrix.fromList(hidden_nodes, output_nodes, dna[1])
-                biases_hidden = Matrix.fromList(cols = hidden_nodes, list = dna[2])
-                biases_output = Matrix.fromList(cols = output_nodes, list = dna[3])
+                weightsInputHidden = Matrix.fromList(input_nodes, hidden_nodes, dna[0])
+                weightsHiddenOutput = Matrix.fromList(hidden_nodes, output_nodes, dna[1])
+                biasesHidden = Matrix.fromList(cols = hidden_nodes, list = dna[2])
+                biasesOutput = Matrix.fromList(cols = output_nodes, list = dna[3])
             }
     }
 
@@ -63,16 +70,16 @@ class NeuralNetwork(
         return this.rate(inputBoard.toNeuralNetworkInput(player))
     }
 
-    fun rate(input: List<Double>): Double {
+    private fun rate(input: List<Double>): Double {
         if (input.size != input_nodes) throw Throwable("input size to NN is not ok")
         val inputMatrix = Matrix.fromList(cols = input_nodes, list = input)
 
-        val hidden = inputMatrix.dot(weights_input_hidden)
-        val hiddenWithBias = hidden.add(biases_hidden)
+        val hidden = inputMatrix.dot(weightsInputHidden)
+        val hiddenWithBias = hidden.add(biasesHidden)
         val hiddenAfterActivation = hiddenWithBias.map { number -> activation(number) }
 
-        val output = hiddenAfterActivation.dot(weights_hidden_output)
-        val outputWithBias = output add biases_output
+        val output = hiddenAfterActivation.dot(weightsHiddenOutput)
+        val outputWithBias = output add biasesOutput
         val outputAfterActivation = outputWithBias.map { number -> activation(number) }
 
         return outputAfterActivation.data.first().first()

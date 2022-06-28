@@ -62,7 +62,7 @@ enum class GameType {
                 if (newBoard != null) {
                     game.board = newBoard
                     if (game.board.countPiecesOfPlayer(player.oppositePlayer) == 0) game.winner = player
-                    game.board.print()
+//                    game.board.print()
                 } else {
                     game.winner = player
                 }

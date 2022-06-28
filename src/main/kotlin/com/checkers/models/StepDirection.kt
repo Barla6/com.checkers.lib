@@ -15,12 +15,6 @@ enum class StepDirection(private val direction: Pair<Int, Int>) {
     val colDirection: Int
         get() = this.direction.second
 
-    fun getOppositeDirection(): StepDirection =
-        values().find { stepDirection ->
-            rowDirection != stepDirection.rowDirection &&
-                    colDirection != stepDirection.colDirection
-        }!!
-
     companion object {
         fun getDirection(startCoordinates: Coordinates, endCoordinates: Coordinates): StepDirection? {
             val rowDirection = endCoordinates.row - startCoordinates.row

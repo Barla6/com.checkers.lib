@@ -73,12 +73,6 @@ class Board(
     fun countPiecesOfPlayer(player: Player): Int =
         countOnBoard { piece -> piece?.player == player }
 
-    private fun countRegularPiecesOfPlayer(player: Player): Int =
-        countOnBoard { piece -> piece?.player == player && piece.type == PieceType.REGULAR }
-
-    private fun countKingsOfPlayer(player: Player): Int =
-        countOnBoard { piece -> piece?.player == player && piece.type == PieceType.KING }
-
     // operations on board:
     fun executeStep(startCoordinates: Coordinates, endCoordinates: Coordinates): Board {
         val board = clone()
