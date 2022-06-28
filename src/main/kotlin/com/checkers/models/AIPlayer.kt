@@ -12,9 +12,9 @@ class AIPlayer(val brain: NeuralNetwork): Player() {
         val movesTree = MovesTree(this, board, 3)
         val leadingStepsAndFinalBoards = movesTree.getLeadingStepsAndFinalBoards()
         if (leadingStepsAndFinalBoards.isEmpty()) return null
-        val bestBoard = pickBoard(leadingStepsAndFinalBoards.map { it.second })
+        val bestBoard = pickBoard(leadingStepsAndFinalBoards.map { it.finalBoard })
 
-        return leadingStepsAndFinalBoards.findLast { it.second == bestBoard }!!.first.resultBoard
+        return leadingStepsAndFinalBoards.findLast { it.finalBoard == bestBoard }!!.leadingStep.resultBoard
     }
 
     private fun pickBoard(boards: List<Board>): Board {

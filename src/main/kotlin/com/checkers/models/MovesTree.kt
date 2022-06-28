@@ -29,7 +29,7 @@ data class MovesTree(val stepSequence: StepSequence? = null) {
     /**
      * returns pairs of first leading stepSequence and final board
      */
-    fun getLeadingStepsAndFinalBoards(): List<Pair<StepSequence, Board>> {
+    fun getLeadingStepsAndFinalBoards(): List<LeadingStepAndFinalBoard> {
         return nextSteps?.map { movesTree -> movesTree.getFinalBoards().map { Pair(movesTree.stepSequence!!, it) } }?.flatten()
                 ?: listOf()
     }
