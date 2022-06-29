@@ -6,7 +6,7 @@ import kotlin.random.Random
 
 class Population(
     val population: List<NeuralNetwork>,
-    private val generationNumber: Int,
+    val generationNumber: Int,
     private val mutationRate: Double
 ) {
 
@@ -18,6 +18,7 @@ class Population(
 
     fun repopulate(): Population {
         createSelectionPool()
+        print("Creating new generation...")
         return Population((population.indices)
             .map {
                 val parent1 = selectParent()

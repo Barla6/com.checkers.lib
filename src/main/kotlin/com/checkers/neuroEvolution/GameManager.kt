@@ -4,10 +4,15 @@ import com.checkers.GameRunner
 import com.checkers.models.AIPlayer
 import com.checkers.models.Game
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import com.checkers.utlis.ProgressBar
 
 class GameManager(private val population: Population) {
 
     private val scope = CoroutineScope(Dispatchers.Default)
+    private val gamesAmount = population.population.size * (population.population.size-1)
+    private val progressBar = ProgressBar("Gen ${population.generationNumber}", gamesAmount)
 
     suspend fun runGamesParallel() {
         population.population.flatMap { brain1 ->
@@ -20,17 +25,17 @@ class GameManager(private val population: Population) {
                 (game.player1 as AIPlayer).brain.updateFitness(game)
                 (game.player2 as AIPlayer).brain.updateFitness(game)
             }
+        println()
     }
 
-    private fun createAndRunGame(brain1: NeuralNetwork, brain2: NeuralNetwork): Game? {
+    private suspend fun createAndRunGame(brain1: NeuralNetwork, brain2: NeuralNetwork): Game? {
 
         if (brain1 == brain2) return null
         val player1 = AIPlayer(brain1)
         val player2 = AIPlayer(brain2)
         val game = Game(player1, player2)
-        println("start run game $game")
         GameRunner.runGame(game)
-        println("end game $game")
+        Mutex().withLock { progressBar.step() }
         return game
     }
 }

@@ -7,7 +7,7 @@ object GameRunner {
 
     fun runGame(game: Game) {
         checkGameType(game).runGame(game)
-        game.printGameDetails()
+//        game.printGameDetails()
     }
 
     private fun checkGameType(game: Game): GameType {
