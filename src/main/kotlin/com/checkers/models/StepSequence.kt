@@ -12,7 +12,6 @@ class StepSequence(
         .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
             board.executeStep(startCoordinates, endCoordinates)
         }
-        get() = field
 
     private val piece: Piece
         get() = resultBoard.getPieceByCoordinates(currentCoordinates)!!
@@ -25,10 +24,10 @@ class StepSequence(
     val currentCoordinates
         get() = steps.last()
 
-    public fun addStep(newCoordinates: Coordinates, eaten: Boolean = false) =
+    private fun addStep(newCoordinates: Coordinates, eaten: Boolean = false) =
         StepSequence(startingBoard, steps + newCoordinates, eaten, !eaten)
 
-    public fun completeStepSequence() =
+    private fun completeStepSequence() =
         StepSequence(startingBoard, steps, eaten, true)
 
     fun getPossibleTurnsForPiece(): List<StepSequence> {
@@ -128,6 +127,6 @@ class StepSequence(
 
     fun stringStepTrace() = steps.fold("") { string, coordinate ->
         return@fold if (steps.last() == coordinate) string + coordinate.toString()
-        else string + coordinate.toString() + "->"
+        else "$string$coordinate->"
     }
 }

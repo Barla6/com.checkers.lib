@@ -27,9 +27,6 @@ data class Coordinates(val row: Int, val col: Int) : Cloneable {
 
     public override fun clone(): Coordinates = Coordinates(row, col)
 
-    infix fun nextTo(other: Coordinates): Boolean =
-        abs(row - other.row) == 1 && abs(col - other.col) == 1
-
     override fun equals(other: Any?): Boolean =
         other is Coordinates && row == other.row && col == other.col
 
@@ -64,15 +61,6 @@ data class Coordinates(val row: Int, val col: Int) : Cloneable {
             val colRange = (startCoordinates.col toward endCoordinates.col)
 
             return rowRange.zip(colRange).toList().map { Coordinates(it) }
-        }
-
-        fun countSteps(startCoordinates: Coordinates, endCoordinates: Coordinates): Int {
-            if (startCoordinates == endCoordinates) return 0
-
-            StepDirection.getDirection(startCoordinates, endCoordinates)
-                ?: throw Exception("can't create range from $startCoordinates to $endCoordinates")
-
-            return abs(endCoordinates.row - startCoordinates.row)
         }
     }
 

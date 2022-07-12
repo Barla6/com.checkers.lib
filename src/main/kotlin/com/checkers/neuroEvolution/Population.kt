@@ -1,19 +1,24 @@
 package com.checkers.neuroEvolution
 
+import com.checkers.utlis.initOnce
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class Population(
     val population: List<NeuralNetwork>,
-    private val generationNumber: Int,
+    val generationNumber: Int,
     private val mutationRate: Double
 ) {
-    private fun minimumFitness(): Double = population.minOfOrNull { it.fitness!! }!!
+
+    private var selectionPool: List<NeuralNetwork> by initOnce()
 
     init {
         population.forEachIndexed { index, nn -> nn.name = "g$generationNumber-i$index" }
     }
 
     fun repopulate(): Population {
+        createSelectionPool()
+        print("Creating new generation...")
         return Population((population.indices)
             .map {
                 val parent1 = selectParent()
@@ -29,26 +34,23 @@ class Population(
         )
     }
 
-    private fun selectParent(partner: NeuralNetwork? = null): NeuralNetwork {
-        // todo: not good
+    private fun createSelectionPool() {
+        selectionPool = population.map { nn -> List(nn.fitness.roundToInt()) {nn} }.flatten()
+    }
 
-        var randomParent = population.random()
-        val randomProbability = Random.nextDouble(minimumFitness(), 1.0)
-        var foundParent = false
-        while (!foundParent) {
-            foundParent = randomParent != partner && randomProbability > randomParent.fitness!!
-            randomParent = population.random()
-        }
+    private fun selectParent(partner: NeuralNetwork? = null): NeuralNetwork {
+        var randomParent = selectionPool.random()
+        while (randomParent == partner) randomParent = selectionPool.random()
         return randomParent
     }
 
     private fun crossover(parent1: NeuralNetwork, parent2: NeuralNetwork): NeuralNetwork {
-        val DNA1 = parent1.DNA
-        val DNA2 = parent2.DNA
+        val dna1 = parent1.dna
+        val dna2 = parent2.dna
 
-        if (DNA1.size != DNA2.size) throw Throwable("can't perform crossover on different sizes DNAs")
+        if (dna1.size != dna2.size) throw Throwable("can't perform crossover on different sizes DNAs")
 
-        val childDNA = DNA1.zip(DNA2).map { pair ->
+        val childDNA = dna1.zip(dna2).map { pair ->
             if (pair.first.size != pair.second.size) throw Throwable("can't perform crossover on different sizes DNAs")
             val size = pair.first.size
             val randomMiddle = (0 until size).random()
@@ -59,9 +61,9 @@ class Population(
     }
 
     private fun mutation(original: NeuralNetwork): NeuralNetwork {
-        val DNA = original.DNA
+        val dna = original.dna
 
-        val mutatedDNA = DNA.map { row ->
+        val mutatedDNA = dna.map { row ->
             row.map { value ->
                 val random = Random.nextDouble(0.0, 1.0)
                 if (mutationRate > random) Random.nextDouble(0.0, 1.0)
@@ -77,6 +79,13 @@ class Population(
             return Population(List(amount) {
                 NeuralNetwork.randomNeuralNetwork(32, 16, 1)
             }, generationNumber, 0.01)
+        }
+    }
+
+    fun printPopulationStats() {
+        println("    name    |  fitness  ")
+        population.forEach { nn ->
+            println("   ${nn.name}   |   ${nn.fitness}")
         }
     }
 }
