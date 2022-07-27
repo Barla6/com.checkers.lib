@@ -1,9 +1,10 @@
 package com.checkers.neuroEvolution
 
 import com.checkers.utlis.initOnce
+import java.io.Serializable
 import kotlin.random.Random
 
-class Matrix(private val rows: Int = 1, private val cols: Int = 1) {
+class Matrix(private val rows: Int = 1, private val cols: Int = 1) : Serializable {
     var data: List<List<Double>> by initOnce()
 
     companion object {
