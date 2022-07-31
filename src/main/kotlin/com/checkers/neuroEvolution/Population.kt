@@ -74,6 +74,8 @@ class Population(
         return NeuralNetwork.fromDNA(original.input_nodes, original.hidden_nodes, original.output_nodes, mutatedDNA)
     }
 
+    fun pickBest():NeuralNetwork? = population.maxByOrNull { it.fitness }
+
     companion object {
         fun generatePopulation(amount: Int, generationNumber: Int): Population {
             return Population(List(amount) {

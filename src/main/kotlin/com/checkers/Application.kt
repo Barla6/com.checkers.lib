@@ -1,5 +1,6 @@
 package com.checkers
 
+import com.checkers.neuroEvolution.DNA
 import com.checkers.models.AIPlayer
 import com.checkers.models.Game
 import com.checkers.models.HumanPlayer
@@ -7,10 +8,12 @@ import com.checkers.models.MovesTree
 import com.checkers.neuroEvolution.Evolution
 import com.checkers.neuroEvolution.NeuralNetwork
 import kotlinx.coroutines.runBlocking
+import java.io.FileInputStream
+import java.io.ObjectInputStream
 import kotlin.system.measureTimeMillis
 
 fun main() = runBlocking {
-    Evolution().draw(5)
+    Evolution().draw()
 
 //    val brain = NeuralNetwork.randomNeuralNetwork(32, 16, 1)
 //    brain.name = "bob"
