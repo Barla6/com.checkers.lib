@@ -11,7 +11,7 @@ import com.checkers.utlis.ProgressBar
 class GameManager(private val population: Population) {
 
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val gamesAmount = population.population.size * (population.population.size-1)
+    private val gamesAmount = population.population.size * (population.population.size - 1)
     private val progressBar = ProgressBar("Gen ${population.generationNumber}", gamesAmount)
 
     suspend fun runGamesParallel() {
@@ -19,7 +19,8 @@ class GameManager(private val population: Population) {
             population.population.map { brain2 ->
                 scope.async { createAndRunGame(brain1, brain2) }
             }
-        }.awaitAll()
+        }
+            .awaitAll()
             .filterNotNull()
             .forEach { game ->
                 (game.player1 as AIPlayer).brain.updateFitness(game)

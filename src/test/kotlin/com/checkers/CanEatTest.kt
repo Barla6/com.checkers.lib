@@ -53,7 +53,7 @@ internal class CanEatTest {
         Mockito.doReturn(eatingPieceCoordinates).`when`(spyStepSequence).currentCoordinates
         Mockito.doReturn(board).`when`(spyStepSequence).resultBoard
 
-        val result = spyStepSequence.canEat(StepDirection.DOWN_RIGHT)
+      val result = spyStepSequence.canEat(StepDirection.DOWN_RIGHT)
 
         assertTrue(result)
     }

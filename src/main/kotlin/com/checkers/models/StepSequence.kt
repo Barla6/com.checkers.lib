@@ -1,6 +1,10 @@
 package com.checkers.models
 
 import com.checkers.utlis.assert
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
 class StepSequence(
     val startingBoard: Board,
@@ -8,10 +12,13 @@ class StepSequence(
     private val eaten: Boolean = false,
     private val completed: Boolean = false
 ) {
-    val resultBoard: Board = steps.zipWithNext()
-        .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
-            board.executeStep(startCoordinates, endCoordinates)
-        }
+    private val scope = CoroutineScope(Dispatchers.Default)
+
+    val resultBoard: Board
+        get() = steps.zipWithNext()
+            .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
+                board.executeStep(startCoordinates, endCoordinates)
+            }
 
     private val piece: Piece
         get() = resultBoard.getPieceByCoordinates(currentCoordinates)!!
@@ -41,6 +48,21 @@ class StepSequence(
                 else it
             }.partition { it.completed }
         return completed + inProgress.map { it.getPossibleTurnsForPiece() }.flatten()
+    }
+
+    suspend fun getPossibleTurnsForPieceAsync(): List<StepSequence> {
+
+        val allNextPossibleSteps = getNextPossibleSteps()
+        if (allNextPossibleSteps.isEmpty()) return listOf()
+
+        val (completed, inProgress) = allNextPossibleSteps
+            .map {
+                scope.async {
+                    if (!it.completed && it.getNextPossibleSteps().isEmpty()) it.completeStepSequence()
+                    else it
+                }
+            }.awaitAll().partition { it.completed }
+        return completed + inProgress.map { it.getPossibleTurnsForPieceAsync() }.flatten()
     }
 
     fun getNextPossibleSteps(): List<StepSequence> {

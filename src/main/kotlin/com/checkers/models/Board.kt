@@ -74,6 +74,7 @@ class Board(
         countOnBoard { piece -> piece?.player == player }
 
     // operations on board:
+
     fun executeStep(startCoordinates: Coordinates, endCoordinates: Coordinates): Board {
         val board = clone()
 
@@ -109,6 +110,8 @@ class Board(
                 if (piece?.player == player) Coordinates(rowIndex, colIndex) else null
             }
         }.flatten()
+
+    // AI related methods:
 
     // todo: maybe move to other place
     fun toNeuralNetworkInput(player: Player): List<Double> {

@@ -16,24 +16,17 @@ data class Coordinates(val row: Int, val col: Int) : Cloneable {
     fun step(stepDirection: StepDirection, numberOfSteps: Int = 1): Coordinates? {
 
         return (1..numberOfSteps).fold(this) { currentCoordinate, _ ->
-            val next = Coordinates(
-                currentCoordinate.row + stepDirection.rowDirection,
-                currentCoordinate.col + stepDirection.colDirection
-            )
-            if (!next.insideBoard()) return null
+            val next = (currentCoordinate + stepDirection) ?: return null
             return@fold next
         }
     }
 
-    public override fun clone(): Coordinates = Coordinates(row, col)
-
-    override fun equals(other: Any?): Boolean =
-        other is Coordinates && row == other.row && col == other.col
-
-    override fun hashCode(): Int {
-        var result = row
-        result = 31 * result + col
-        return result
+    operator fun plus(d: StepDirection): Coordinates? {
+        val resultCoordinate = Coordinates(
+            this.row + d.rowDirection,
+            this.col + d.colDirection
+        )
+        return if (resultCoordinate.insideBoard()) resultCoordinate else null
     }
 
     fun getAllCoordinatesInDirection(direction: StepDirection): List<Coordinates> {
@@ -62,6 +55,17 @@ data class Coordinates(val row: Int, val col: Int) : Cloneable {
 
             return rowRange.zip(colRange).toList().map { Coordinates(it) }
         }
+    }
+
+    public override fun clone(): Coordinates = Coordinates(row, col)
+
+    override fun equals(other: Any?): Boolean =
+        other is Coordinates && row == other.row && col == other.col
+
+    override fun hashCode(): Int {
+        var result = row
+        result = 31 * result + col
+        return result
     }
 
     override fun toString() = "[$row, $col]"

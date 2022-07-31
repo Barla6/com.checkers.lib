@@ -1,26 +1,31 @@
 package com.checkers.models
 
 import com.checkers.neuroEvolution.NeuralNetwork
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
-class AIPlayer(val brain: NeuralNetwork): Player() {
+class AIPlayer(val brain: NeuralNetwork) : Player() {
+    val scope = CoroutineScope(Dispatchers.Default)
 
     init {
         name = brain.name
     }
 
-    fun playTurn(board: Board): Board? {
+    suspend fun playTurn(board: Board): Board? {
         val movesTree = MovesTree(this, board, 3)
         val leadingStepsAndFinalBoards = movesTree.getLeadingStepsAndFinalBoards()
         if (leadingStepsAndFinalBoards.isEmpty()) return null
-        val bestBoard = pickBoard(leadingStepsAndFinalBoards.map { it.finalBoard })
+        val bestBoard = pickBoardAsync(leadingStepsAndFinalBoards.map { it.finalBoard })
 
         return leadingStepsAndFinalBoards.findLast { it.finalBoard == bestBoard }!!.leadingStep.resultBoard
     }
 
-    private fun pickBoard(boards: List<Board>): Board {
-        // todo: run async all the rates
+    private suspend fun pickBoardAsync(boards: List<Board>): Board {
         val bestBoard = boards
-            .mapIndexed { a, b -> a to brain.rate(b, this) }
+            .mapIndexed() { index, board -> scope.async { index to brain.rate(board, this@AIPlayer) } }
+            .awaitAll()
             .maxByOrNull { it.second }
         return boards[bestBoard!!.first]
     }
