@@ -7,7 +7,7 @@ object GameRunner {
 
     suspend fun runGame(game: Game) {
         checkGameType(game).runGame(game)
-        game.printGameDetails()
+//        game.printGameDetails()
     }
 
     private fun checkGameType(game: Game): GameType {
@@ -37,14 +37,14 @@ enum class GameType {
 
             while (!game.isOver) {
                 if (currentPlayer is HumanPlayer) {
-                    val movesTree = MovesTree(currentPlayer, game.board, 1)
+                    val movesTree = MovesTree.create(currentPlayer, game.board, 1)
                     if (movesTree.nextSteps!!.isEmpty())
                         game.winner = currentPlayer.oppositePlayer
                     val leadingStepsAndFinalBoards = movesTree.getLeadingStepsAndFinalBoards()
 
                     println("choose move:")
                     leadingStepsAndFinalBoards.map { it.leadingStep }.forEachIndexed { index, step ->
-                        println("${index+1}) ${step.stringStepTrace()}")
+                        println("${index+1}) $step")
                     }
                     val chosenStepIndex = reader.nextInt()-1
                     val stepSequence = leadingStepsAndFinalBoards[chosenStepIndex].leadingStep
@@ -61,7 +61,7 @@ enum class GameType {
                     game.board = turnResult
                 }
 
-                game.board.print()
+                println(game.board)
                 game.turnCounter++
 
                 game.checkForWinner()

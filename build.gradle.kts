@@ -28,6 +28,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.21")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3")
+    implementation("com.google.code.gson:gson:2.7")
 }
 
 tasks.test {

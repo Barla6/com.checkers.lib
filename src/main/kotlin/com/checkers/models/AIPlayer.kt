@@ -7,14 +7,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 
 class AIPlayer(val brain: NeuralNetwork) : Player() {
-    val scope = CoroutineScope(Dispatchers.Default)
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     init {
         name = brain.name
     }
 
     suspend fun playTurn(board: Board): Board? {
-        val movesTree = MovesTree(this, board, 3)
+        val movesTree = MovesTree.create(this, board, 3)
         val leadingStepsAndFinalBoards = movesTree.getLeadingStepsAndFinalBoards()
         if (leadingStepsAndFinalBoards.isEmpty()) return null
         val bestBoard = pickBoardAsync(leadingStepsAndFinalBoards.map { it.finalBoard })
@@ -24,6 +24,7 @@ class AIPlayer(val brain: NeuralNetwork) : Player() {
 
     private suspend fun pickBoardAsync(boards: List<Board>): Board {
         val bestBoard = boards
+                // todo: switch to asyncMapIndex
             .mapIndexed() { index, board -> scope.async { index to brain.rate(board, this@AIPlayer) } }
             .awaitAll()
             .maxByOrNull { it.second }

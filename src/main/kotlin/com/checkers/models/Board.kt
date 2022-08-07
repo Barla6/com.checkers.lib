@@ -5,8 +5,8 @@ class Board(
 ) : Cloneable {
 
     companion object {
-        const val ROWS_NUMBER : Int = 8
-        const val COLS_NUMBER : Int = 8
+        const val ROWS_NUMBER: Int = 8
+        const val COLS_NUMBER: Int = 8
     }
 
     fun initGameBoard(player1: Player, player2: Player) {
@@ -31,20 +31,20 @@ class Board(
         }
     }
 
-    fun print() {
+    override fun toString(): String {
+        var result = ""
         board.forEach { row ->
-            println()
-            print("|")
+            result += "\n|"
             row.forEach { piece ->
-                val toPrint = when (piece?.player?.playerDirection) {
+                result += when (piece?.player?.playerDirection) {
                     PlayerDirection.DOWNWARDS -> if (piece.type == PieceType.KING) "O|" else "o|"
                     PlayerDirection.UPWARDS -> if (piece.type == PieceType.KING) "X|" else "x|"
                     else -> " |"
                 }
-                print(toPrint)
             }
         }
-        println()
+        result += "\n"
+        return result
     }
 
     // checks on board:
@@ -77,7 +77,6 @@ class Board(
 
     fun executeStep(startCoordinates: Coordinates, endCoordinates: Coordinates): Board {
         val board = clone()
-
         board.movePiece(startCoordinates, endCoordinates)
         Coordinates.range(startCoordinates, endCoordinates)
             .dropLast(1).forEach { board.removePiece(it) }

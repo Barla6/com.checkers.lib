@@ -4,8 +4,6 @@ import com.checkers.models.*
 import com.checkers.models.PlayerDirection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 internal class GetPossibleTurnsForPieceTest {
 
@@ -33,7 +31,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_piece_noPossibleTurns() {
+    suspend fun getPossibleTurnsForPiece_piece_noPossibleTurns() {
         val thisPiece = friendlyPiece
         val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
@@ -44,7 +42,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(blockingPiece, blockingCoordinates[1])
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf<StepSequence>()
 
@@ -52,7 +50,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_piece_oneStepPossible() {
+    suspend fun getPossibleTurnsForPiece_piece_oneStepPossible() {
         val thisPiece = friendlyPiece
         val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
@@ -63,7 +61,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(blockingPiece, blockingCoordinates[1])
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf(
                 StepSequence(
@@ -78,7 +76,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_piece_oneEating() {
+    suspend fun getPossibleTurnsForPiece_piece_oneEating() {
         val thisPiece = friendlyPiece
         val blockingPiece = friendlyPiece
         val pieceToEat = enemyPiece
@@ -92,7 +90,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(blockingPiece, blockingPieceCoordinates)
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf(
                 StepSequence(
@@ -107,7 +105,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_piece_moreThanOneEating() {
+    suspend fun getPossibleTurnsForPiece_piece_moreThanOneEating() {
         val thisPiece = friendlyPiece
         val blockingPiece = friendlyPiece
         val pieceToEat = enemyPiece
@@ -122,7 +120,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(pieceToEat, pieceToEatCoordinates[1])
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf(
                 StepSequence(
@@ -137,7 +135,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_king_noPossibleMoves() {
+    suspend fun getPossibleTurnsForPiece_king_noPossibleMoves() {
         val thisPiece = friendlyKing
         val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
@@ -148,7 +146,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(blockingPiece, blockingPieceCoordinates[1])
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf<StepSequence>()
 
@@ -156,7 +154,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_king_oneStep() {
+    suspend fun getPossibleTurnsForPiece_king_oneStep() {
         val thisPiece = friendlyKing
         val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
@@ -167,7 +165,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(blockingPiece, blockingPieceCoordinates[1])
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf(
                 StepSequence(
@@ -182,7 +180,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_king_oneDistantStep() {
+    suspend fun getPossibleTurnsForPiece_king_oneDistantStep() {
         val thisPiece = friendlyKing
         val blockingPiece = friendlyPiece
         val startingCoordinates = Coordinates(7, 3)
@@ -192,7 +190,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(blockingPiece, blockingPieceCoordinates)
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf(
                 StepSequence(
@@ -219,7 +217,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_king_oneEating() {
+    suspend fun getPossibleTurnsForPiece_king_oneEating() {
         val thisPiece = friendlyKing
         val blockingPiece = friendlyPiece
         val pieceToEat = enemyPiece
@@ -232,7 +230,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(pieceToEat, pieceToEatCoordinates)
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf(
                 StepSequence(
@@ -253,7 +251,7 @@ internal class GetPossibleTurnsForPieceTest {
     }
 
     @Test
-    fun getPossibleTurnsForPiece_king_moreThanOneEating() {
+    suspend fun getPossibleTurnsForPiece_king_moreThanOneEating() {
         val thisPiece = friendlyKing
         val blockingPiece = friendlyPiece
         val pieceToEat = enemyPiece
@@ -267,7 +265,7 @@ internal class GetPossibleTurnsForPieceTest {
         startingBoard.placePiece(pieceToEat, pieceToEatCoordinates[1])
 
         val stepSequence = StepSequence(startingBoard, listOf(startingCoordinates))
-        val result = stepSequence.getPossibleTurnsForPiece()
+        val result = stepSequence.getPossibleTurnsForPieceAsync()
 
         val expected = listOf(
                 StepSequence(
@@ -298,10 +296,4 @@ internal class GetPossibleTurnsForPieceTest {
 
         assertEqualLists(expected, result)
     }
-}
-
-fun assertEqualLists(expected: List<Any?>, result: List<Any?>) {
-    assertEquals(expected.size, result.size)
-    assertTrue(expected.containsAll(result))
-    assertTrue(result.containsAll(expected))
 }

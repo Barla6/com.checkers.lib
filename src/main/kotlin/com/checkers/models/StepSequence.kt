@@ -1,10 +1,9 @@
 package com.checkers.models
 
 import com.checkers.utlis.assert
+import com.checkers.utlis.asyncMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 
 class StepSequence(
     val startingBoard: Board,
@@ -37,31 +36,18 @@ class StepSequence(
     private fun completeStepSequence() =
         StepSequence(startingBoard, steps, eaten, true)
 
-    fun getPossibleTurnsForPiece(): List<StepSequence> {
-
-        val allNextPossibleSteps = getNextPossibleSteps()
-        if (allNextPossibleSteps.isEmpty()) return listOf()
-
-        val (completed, inProgress) = allNextPossibleSteps
-            .map {
-                if (!it.completed && it.getNextPossibleSteps().isEmpty()) it.completeStepSequence()
-                else it
-            }.partition { it.completed }
-        return completed + inProgress.map { it.getPossibleTurnsForPiece() }.flatten()
-    }
-
     suspend fun getPossibleTurnsForPieceAsync(): List<StepSequence> {
 
         val allNextPossibleSteps = getNextPossibleSteps()
         if (allNextPossibleSteps.isEmpty()) return listOf()
 
         val (completed, inProgress) = allNextPossibleSteps
-            .map {
-                scope.async {
-                    if (!it.completed && it.getNextPossibleSteps().isEmpty()) it.completeStepSequence()
-                    else it
-                }
-            }.awaitAll().partition { it.completed }
+            .asyncMap(scope) {
+                if (!it.completed && it.getNextPossibleSteps().isEmpty())
+                    it.completeStepSequence()
+                else it
+            }
+            .partition { it.completed }
         return completed + inProgress.map { it.getPossibleTurnsForPieceAsync() }.flatten()
     }
 
@@ -147,7 +133,7 @@ class StepSequence(
         (other is StepSequence) && (startingBoard == other.startingBoard) &&
                 (steps == other.steps) && (eaten == other.eaten) && (completed == other.completed)
 
-    fun stringStepTrace() = steps.fold("") { string, coordinate ->
+    override fun toString() = steps.fold("") { string, coordinate ->
         return@fold if (steps.last() == coordinate) string + coordinate.toString()
         else "$string$coordinate->"
     }

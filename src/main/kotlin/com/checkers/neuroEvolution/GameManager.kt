@@ -15,9 +15,12 @@ class GameManager(private val population: Population) {
     private val progressBar = ProgressBar("Gen ${population.generationNumber}", gamesAmount)
 
     suspend fun runGamesParallel() {
+        progressBar.start()
         population.population.flatMap { brain1 ->
             population.population.map { brain2 ->
-                scope.async { createAndRunGame(brain1, brain2) }
+                scope.async {
+                    createAndRunGame(brain1, brain2)
+                }
             }
         }
             .awaitAll()
@@ -26,7 +29,6 @@ class GameManager(private val population: Population) {
                 (game.player1 as AIPlayer).brain.updateFitness(game)
                 (game.player2 as AIPlayer).brain.updateFitness(game)
             }
-        println()
     }
 
     private suspend fun createAndRunGame(brain1: NeuralNetwork, brain2: NeuralNetwork): Game? {
@@ -36,7 +38,7 @@ class GameManager(private val population: Population) {
         val player2 = AIPlayer(brain2)
         val game = Game(player1, player2)
         GameRunner.runGame(game)
-        Mutex().withLock { progressBar.step() }
+        progressBar.step()
         return game
     }
 }
