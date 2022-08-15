@@ -1,5 +1,6 @@
 package com.checkers.neuroEvolution
 
+import com.checkers.utlis.asyncMap
 import com.checkers.utlis.initOnce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,15 +20,14 @@ class Population(
         population.forEachIndexed { index, nn -> nn.name = "g$generationNumber-i$index" }
     }
 
-    fun repopulate(): Population {
+    suspend fun repopulate(): Population {
         createSelectionPool()
-        // todo: async
         return Population((population.indices)
-            .map {
+            .asyncMap(scope) {
                 getParents()
-            }.map { parents ->
+            }.asyncMap(scope) { parents ->
                 crossover(parents.first, parents.second)
-            }.map { child ->
+            }.asyncMap(scope) { child ->
                 mutation(child)
             },
             generationNumber + 1, mutationRate

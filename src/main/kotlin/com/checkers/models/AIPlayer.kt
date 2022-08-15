@@ -3,8 +3,7 @@ package com.checkers.models
 import com.checkers.neuroEvolution.NeuralNetwork
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import com.checkers.utlis.asyncMapIndexed
 
 class AIPlayer(val brain: NeuralNetwork) : Player() {
     private val scope = CoroutineScope(Dispatchers.Default)
@@ -24,9 +23,7 @@ class AIPlayer(val brain: NeuralNetwork) : Player() {
 
     private suspend fun pickBoardAsync(boards: List<Board>): Board {
         val bestBoard = boards
-                // todo: switch to asyncMapIndex
-            .mapIndexed() { index, board -> scope.async { index to brain.rate(board, this@AIPlayer) } }
-            .awaitAll()
+            .asyncMapIndexed(scope) {index, board -> index to brain.rate(board, this@AIPlayer)}
             .maxByOrNull { it.second }
         return boards[bestBoard!!.first]
     }

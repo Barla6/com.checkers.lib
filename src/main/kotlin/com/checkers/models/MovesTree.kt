@@ -1,5 +1,6 @@
 package com.checkers.models
 
+import com.checkers.utlis.asyncMap
 import com.checkers.utlis.initOnce
 import kotlinx.coroutines.*
 
@@ -24,19 +25,15 @@ data class MovesTree(val stepSequence: StepSequence? = null) {
             .map { StepSequence(board.clone(), listOf(it)) }
             .flatMap { it.getPossibleTurnsForPieceAsync() }
             .map { MovesTree(it) }
-                // todo: replace with asyncMap
-            .map {
-                scope.async {
-                    it.apply {
-                        nextSteps =
-                            getAllPossibleNextMovesAsync(
-                                player.oppositePlayer,
-                                it.stepSequence!!.resultBoard,
-                                depth - 1
-                            )
-                    }
-                }
-            }.awaitAll()
+            .asyncMap(scope) { it.apply {
+                nextSteps =
+                    getAllPossibleNextMovesAsync(
+                        player.oppositePlayer,
+                        it.stepSequence!!.resultBoard,
+                        depth - 1
+                    )
+            }
+        }
     }
 
     /**
