@@ -1,21 +1,22 @@
 package com.checkers
 
-import com.checkers.neuroEvolution.DNA
+import com.checkers.models.*
 import com.checkers.neuroEvolution.Evolution
+import com.checkers.neuroEvolution.Matrix
 import com.checkers.neuroEvolution.NeuralNetwork
 import kotlinx.coroutines.runBlocking
-import java.io.FileInputStream
-import java.io.ObjectInputStream
 
 fun main() = runBlocking {
 
-//    val path = "C:\\Users\\barla\\Desktop\\programming\\Checkers\\CheckersLib\\src\\main\\kotlin\\com\\checkers\\neuroEvolution\\trainedBrains\\easy.txt"
-//
-//    val dna = ObjectInputStream(FileInputStream(path)).use { it.readObject() } as DNA
-//
-//    val nn = NeuralNetwork.fromDNA(32, 16, 1, dna)
-//
-//    println(nn)
-
     Evolution().draw()
+
+//    val brain = NeuralNetwork.randomNeuralNetwork(32, 16, 1)
+//    brain.name = "bob"
+//    val aiPlayer1 = AIPlayer(brain)
+//    val brain2 = NeuralNetwork.randomNeuralNetwork(32, 16, 1)
+//    brain2.name = "alice"
+//    val aiPlayer2 = AIPlayer(brain)
+//    val game = Game(aiPlayer1, aiPlayer2)
+
+//    GameRunner.runGame(game)
 }

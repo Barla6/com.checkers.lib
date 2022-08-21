@@ -28,34 +28,8 @@ class Game(val player1: Player, val player2: Player) {
 
     fun getRandomPlayer() = listOf(player1, player2).random()
 
-    fun playTurn(stepSequence: StepSequence, humanPlayer: Player) {
-        if (stepSequence.startingBoard != board) throw Throwable("step sequence is not valid")
-
-        board = stepSequence.resultBoard
-        board.print()
-        turnCounter++
-
-        winner = checkForWinner()
-
-        if (isOver) return
-
-        val computerPlayer = humanPlayer.oppositePlayer as AIPlayer
-        val turnResult = computerPlayer.playTurn(board)
-        if (turnResult == null) {
-            winner = humanPlayer
-            return
-        }
-        board = turnResult
-        board.print()
-        turnCounter++
-        winner = checkForWinner()
-        if (isOver) return
-
-        if (MovesTree(humanPlayer, board, 1).nextSteps!!.isEmpty()) winner = computerPlayer
-    }
-
-    private fun checkForWinner(): Player? {
-        return when {
+    fun checkForWinner() {
+        winner =  when {
             board.countPiecesOfPlayer(player1) == 0 -> player2
             board.countPiecesOfPlayer(player2) == 0 -> player1
             else -> null

@@ -5,20 +5,20 @@ import java.util.*
 
 object GameRunner {
 
-    fun runGame(game: Game) {
+    suspend fun runGame(game: Game) {
         checkGameType(game).runGame(game)
 //        game.printGameDetails()
     }
 
     private fun checkGameType(game: Game): GameType {
         return when (game.player1) {
-            is HumanPlayer -> when (game.player2) {
-                is HumanPlayer -> GameType.HUMAN_VS_HUMAN
-                is AIPlayer -> GameType.HUMAN_VS_COMPUTER
-            }
             is AIPlayer -> when (game.player2) {
-                is HumanPlayer -> GameType.HUMAN_VS_COMPUTER
                 is AIPlayer -> GameType.COMPUTER_VS_COMPUTER
+                else -> GameType.HUMAN_VS_COMPUTER
+            }
+            else -> when (game.player2) {
+                is AIPlayer -> GameType.HUMAN_VS_COMPUTER
+                else -> GameType.HUMAN_VS_HUMAN
             }
         }
     }
@@ -26,35 +26,53 @@ object GameRunner {
 
 enum class GameType {
     HUMAN_VS_HUMAN {
-        override fun runGame(game: Game) {
+        override suspend fun runGame(game: Game) {
             TODO("Not yet implemented")
         }
     },
     HUMAN_VS_COMPUTER {
-        override fun runGame(game: Game) {
+        override suspend fun runGame(game: Game) {
             val reader = Scanner(System.`in`)
-            val humanPlayer = getHumanPlayer(game)
+            var currentPlayer = game.getRandomPlayer()
 
             while (!game.isOver) {
-                val movesTree = MovesTree(humanPlayer, game.board, 1)
-                val leadingStepsAndFinalBoards = movesTree.getLeadingStepsAndFinalBoards()
+                if (currentPlayer is HumanPlayer) {
+                    val movesTree = MovesTree.create(currentPlayer, game.board, 1)
+                    if (movesTree.nextSteps!!.isEmpty())
+                        game.winner = currentPlayer.oppositePlayer
+                    val leadingStepsAndFinalBoards = movesTree.getLeadingStepsAndFinalBoards()
 
-                println("choose move:")
-                leadingStepsAndFinalBoards.map { it.leadingStep }.forEachIndexed { index, step ->
-                    println("${index+1}) ${step.stringStepTrace()}")
+                    println("choose move:")
+                    leadingStepsAndFinalBoards.map { it.leadingStep }.forEachIndexed { index, step ->
+                        println("${index+1}) $step")
+                    }
+                    val chosenStepIndex = reader.nextInt()-1
+                    val stepSequence = leadingStepsAndFinalBoards[chosenStepIndex].leadingStep
+
+                    game.board = stepSequence.resultBoard
                 }
-                val chosenStepIndex = reader.nextInt()-1
+                if (currentPlayer is AIPlayer) {
+                    val turnResult = currentPlayer.playTurn(game.board)
+                    if (turnResult == null) {
+                        game.winner = currentPlayer.oppositePlayer
+                        return
+                    }
 
-                game.playTurn(leadingStepsAndFinalBoards[chosenStepIndex].leadingStep, humanPlayer)
+                    game.board = turnResult
+                }
+
+                println(game.board)
+                game.turnCounter++
+
+                game.checkForWinner()
+                if (game.isOver) return
+
+                currentPlayer = currentPlayer.oppositePlayer
             }
-        }
-
-        private fun getHumanPlayer(game: Game): Player {
-            return listOf(game.player1, game.player2).find { it is HumanPlayer }!!
         }
     },
     COMPUTER_VS_COMPUTER {
-        override fun runGame(game: Game) {
+        override suspend fun runGame(game: Game) {
             var player = game.getRandomPlayer() as AIPlayer
             while (!game.isOver) {
                 val newBoard = player.playTurn(game.board)
@@ -71,5 +89,5 @@ enum class GameType {
         }
     };
 
-    abstract fun runGame(game: Game)
+    abstract suspend fun runGame(game: Game)
 }

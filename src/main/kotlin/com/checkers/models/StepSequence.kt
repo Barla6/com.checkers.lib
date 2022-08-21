@@ -1,6 +1,9 @@
 package com.checkers.models
 
 import com.checkers.utlis.assert
+import com.checkers.utlis.asyncMap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class StepSequence(
     val startingBoard: Board,
@@ -8,10 +11,13 @@ class StepSequence(
     private val eaten: Boolean = false,
     private val completed: Boolean = false
 ) {
-    val resultBoard: Board = steps.zipWithNext()
-        .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
-            board.executeStep(startCoordinates, endCoordinates)
-        }
+    private val scope = CoroutineScope(Dispatchers.Default)
+
+    val resultBoard: Board
+        get() = steps.zipWithNext()
+            .fold(startingBoard.clone()) { board, (startCoordinates, endCoordinates) ->
+                board.executeStep(startCoordinates, endCoordinates)
+            }
 
     private val piece: Piece
         get() = resultBoard.getPieceByCoordinates(currentCoordinates)!!
@@ -30,17 +36,19 @@ class StepSequence(
     private fun completeStepSequence() =
         StepSequence(startingBoard, steps, eaten, true)
 
-    fun getPossibleTurnsForPiece(): List<StepSequence> {
+    suspend fun getPossibleTurnsForPieceAsync(): List<StepSequence> {
 
         val allNextPossibleSteps = getNextPossibleSteps()
         if (allNextPossibleSteps.isEmpty()) return listOf()
 
         val (completed, inProgress) = allNextPossibleSteps
-            .map {
-                if (!it.completed && it.getNextPossibleSteps().isEmpty()) it.completeStepSequence()
+            .asyncMap(scope) {
+                if (!it.completed && it.getNextPossibleSteps().isEmpty())
+                    it.completeStepSequence()
                 else it
-            }.partition { it.completed }
-        return completed + inProgress.map { it.getPossibleTurnsForPiece() }.flatten()
+            }
+            .partition { it.completed }
+        return completed + inProgress.map { it.getPossibleTurnsForPieceAsync() }.flatten()
     }
 
     fun getNextPossibleSteps(): List<StepSequence> {
@@ -125,7 +133,7 @@ class StepSequence(
         (other is StepSequence) && (startingBoard == other.startingBoard) &&
                 (steps == other.steps) && (eaten == other.eaten) && (completed == other.completed)
 
-    fun stringStepTrace() = steps.fold("") { string, coordinate ->
+    override fun toString() = steps.fold("") { string, coordinate ->
         return@fold if (steps.last() == coordinate) string + coordinate.toString()
         else "$string$coordinate->"
     }

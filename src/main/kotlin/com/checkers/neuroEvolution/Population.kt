@@ -1,6 +1,9 @@
 package com.checkers.neuroEvolution
 
+import com.checkers.utlis.asyncMap
 import com.checkers.utlis.initOnce
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -10,32 +13,49 @@ class Population(
     private val mutationRate: Double
 ) {
 
+    private val scope = CoroutineScope(Dispatchers.Default)
     private var selectionPool: List<NeuralNetwork> by initOnce()
 
     init {
         population.forEachIndexed { index, nn -> nn.name = "g$generationNumber-i$index" }
     }
 
-    fun repopulate(): Population {
+    suspend fun repopulate(): Population {
         createSelectionPool()
-        print("Creating new generation...")
         return Population((population.indices)
-            .map {
-                val parent1 = selectParent()
-                val parent2 = selectParent(partner = parent1)
-                Pair(parent1, parent2)
-            }.map { parents ->
+            .asyncMap(scope) {
+                getParents()
+            }.asyncMap(scope) { parents ->
                 crossover(parents.first, parents.second)
-            }.map { child ->
+            }.asyncMap(scope) { child ->
                 mutation(child)
             },
-            generationNumber + 1
-        ,mutationRate
+            generationNumber + 1, mutationRate
         )
+
+//        return Population((population.indices)
+//            .map {
+//                val parent1 = selectParent()
+//                val parent2 = selectParent(partner = parent1)
+//                parent1 to parent2
+//            }
+//            .map { parents ->
+//                crossover(parents.first, parents.second)
+//            }.map { child ->
+//                mutation(child)
+//            },
+//            generationNumber + 1, mutationRate
+//        )
     }
 
     private fun createSelectionPool() {
-        selectionPool = population.map { nn -> List(nn.fitness.roundToInt()) {nn} }.flatten()
+        selectionPool = population.map { nn -> List(nn.fitness.roundToInt()) { nn } }.flatten()
+    }
+
+    private fun getParents(): Pair<NeuralNetwork, NeuralNetwork> {
+        val parent1 = selectParent()
+        val parent2 = selectParent(partner = parent1)
+        return parent1 to parent2
     }
 
     private fun selectParent(partner: NeuralNetwork? = null): NeuralNetwork {
@@ -74,7 +94,7 @@ class Population(
         return NeuralNetwork.fromDNA(original.input_nodes, original.hidden_nodes, original.output_nodes, mutatedDNA)
     }
 
-    fun pickBest():NeuralNetwork? = population.maxByOrNull { it.fitness }
+    fun pickBest(): NeuralNetwork? = population.maxByOrNull { it.fitness }
 
     companion object {
         fun generatePopulation(amount: Int, generationNumber: Int): Population {
